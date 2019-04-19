@@ -19,3 +19,6 @@ libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1
 
 libraryDependencies += "org.reactivemongo" % "play2-reactivemongo_2.12" % "0.16.5-play27"
 libraryDependencies += "com.typesafe.play" %% "play-mailer" % "6.0.0"
+
+libraryDependencies += "com.github.jsonld-java" % "jsonld-java" % "0.12.3"
+libraryDependencies += "org.apache.jena" % "apache-jena-libs" % "3.10.0"

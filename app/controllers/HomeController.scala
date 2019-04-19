@@ -19,6 +19,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * a path of `/`.
    */
   def index() = Action { implicit request: Request[AnyContent] =>
+    // request.domain -> The domain.  You can get the subdomain from this.
     Ok(views.html.index())
   }
 }
