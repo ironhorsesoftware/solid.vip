@@ -7,3 +7,9 @@ target
 /.settings
 /RUNNING_PID
 /bin/
+
+.DS_Store
+.cache-main
+.cache-tests
+.g8/
+.gitignore~
