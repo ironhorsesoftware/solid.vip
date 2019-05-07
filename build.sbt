@@ -26,7 +26,7 @@ libraryDependencies += "com.ironhorsesoftware" % "webid-tls-jsse" % "0.1.0"
 
 libraryDependencies += "io.minio" % "minio" % "6.0.6"
 
-libraryDependencies += "org.w3" % "ldp-testsuite" % "0.1.1" % Test
+libraryDependencies += "org.w3" % "ldp-testsuite" % "0.1.1" % Test // http://w3c.github.io/ldp-testsuite/
 
 resolvers += (
   "Local Maven Repository" at s"file:///${Path.userHome.absolutePath}/.m2/repository"
