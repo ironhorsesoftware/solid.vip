@@ -22,7 +22,7 @@ libraryDependencies += "com.typesafe.play" %% "play-mailer" % "6.0.0"
 
 libraryDependencies += "com.github.jsonld-java" % "jsonld-java" % "0.12.3"
 libraryDependencies += "org.apache.jena" % "apache-jena-libs" % "3.10.0"
-libraryDependencies += "com.ironhorsesoftware" % "webid-tls-jsse" % "0.1.0"
+libraryDependencies += "com.ironhorsesoftware" % "webid-tls-jsse" % "0.1.1"
 
 libraryDependencies += "io.minio" % "minio" % "6.0.6"
 
