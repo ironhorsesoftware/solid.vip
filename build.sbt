@@ -47,6 +47,6 @@ libraryDependencies ++= Seq(
 
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
-resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/",
+resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/"
 
 updateOptions := updateOptions.value.withLatestSnapshots(false)
