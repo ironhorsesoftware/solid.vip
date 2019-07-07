@@ -5,6 +5,7 @@ version := "1.0-SNAPSHOT"
 
 lazy val silhouetteVersion = "6.0.0"
 lazy val playSlickVersion = "3.0.0"
+lazy val bouncyCastleVersion = "1.61"
 lazy val playMailerVersion = "7.0.0" 
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
