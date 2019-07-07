@@ -5,6 +5,7 @@ version := "1.0-SNAPSHOT"
 
 lazy val silhouetteVersion = "6.0.0"
 lazy val playSlickVersion = "3.0.0"
+lazy val playMailerVersion = "7.0.0" 
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalacOptions ++= Seq("-deprecation", "-language:_")
@@ -29,6 +30,8 @@ libraryDependencies += "org.apache.jena" % "apache-jena-libs" % "3.10.0"
 libraryDependencies += "io.minio" % "minio" % "6.0.6"
 
 libraryDependencies ++= Seq(
+    "com.typesafe.play"   %% "play-mailer"                     % playMailerVersion,
+    "com.typesafe.play"   %% "play-mailer-guice"               % playMailerVersion, 
     "com.mohiva"          %% "play-silhouette"                 % silhouetteVersion,
     "com.mohiva"          %% "play-silhouette-persistence"     % silhouetteVersion,
     "com.mohiva"          %% "play-silhouette-password-bcrypt" % silhouetteVersion,
