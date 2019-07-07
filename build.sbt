@@ -13,7 +13,6 @@ scalacOptions ++= Seq("-deprecation", "-language:_")
 
 scalaVersion := "2.12.8"
 
-libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
 
 // Adds additional packages into Twirl
@@ -44,6 +43,7 @@ libraryDependencies ++= Seq(
     "net.codingwell"      %% "scala-guice"                     % "4.1.0",
     "com.adrianhurt"      %% "play-bootstrap"                  % "1.5-P27-B4-RC-SNAPSHOT",
     "org.postgresql"       % "postgresql"                      % "42.2.5",
+    "org.bouncycastle"     % "bcprov-jdk15on"                  % bouncyCastleVersion,
     guice,
     caffeine,
     evolutions
