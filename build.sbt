@@ -3,6 +3,9 @@ organization := "vip.solid"
 
 version := "1.0-SNAPSHOT"
 
+lazy val silhouetteVersion = "6.0.0"
+lazy val playSlickVersion = "3.0.0"
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalacOptions ++= Seq("-deprecation", "-language:_")
 
@@ -22,12 +25,26 @@ libraryDependencies += "com.typesafe.play" %% "play-mailer" % "6.0.0"
 
 libraryDependencies += "com.github.jsonld-java" % "jsonld-java" % "0.12.3"
 libraryDependencies += "org.apache.jena" % "apache-jena-libs" % "3.10.0"
-//libraryDependencies += "com.ironhorsesoftware" % "webid-tls-jsse" % "0.1.1"
 
 libraryDependencies += "io.minio" % "minio" % "6.0.6"
 
-libraryDependencies += "org.w3" % "ldp-testsuite" % "0.1.1" % Test // http://w3c.github.io/ldp-testsuite/
+libraryDependencies ++= Seq(
+    "com.mohiva"          %% "play-silhouette"                 % silhouetteVersion,
+    "com.mohiva"          %% "play-silhouette-persistence"     % silhouetteVersion,
+    "com.mohiva"          %% "play-silhouette-password-bcrypt" % silhouetteVersion,
+    "com.mohiva"          %% "play-silhouette-crypto-jca"      % silhouetteVersion,
+    "com.mohiva"          %% "play-silhouette-testkit"         % silhouetteVersion % "test",
+    "com.typesafe.play"   %% "play-slick"                      % playSlickVersion,
+    "com.typesafe.play"   %% "play-slick-evolutions"           % playSlickVersion,
+    "com.iheart"          %% "ficus"                           % "1.4.3",
+    "net.codingwell"      %% "scala-guice"                     % "4.1.0",
+    "com.adrianhurt"      %% "play-bootstrap"                  % "1.5-P27-B4-RC-SNAPSHOT",
+    "org.postgresql"       % "postgresql"                      % "42.2.5",
+    guice,
+    caffeine,
+    evolutions
+)
 
-//resolvers += (
-//  "Local Maven Repository" at s"file:///${Path.userHome.absolutePath}/.m2/repository"
-//)
+
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
+updateOptions := updateOptions.value.withLatestSnapshots(false)
