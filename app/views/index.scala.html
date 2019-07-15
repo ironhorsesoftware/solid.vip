@@ -1,4 +1,8 @@
-@()
+@(contactForm : Form[forms.ContactForm.Data])(implicit header: RequestHeader, flash : Flash, messagesProvider : MessagesProvider)
+
+@import helper._
+
+@implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-12", "col-md-12") }
 
 @main("Solid.VIP") {
   <!--==========================
