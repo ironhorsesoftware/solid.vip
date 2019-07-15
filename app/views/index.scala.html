@@ -37,6 +37,10 @@
     Intro Section
   ============================-->
   <section id="intro">
+    @flash.data.map { case (name, value) =>
+       <h4>@value</h4>
+    }
+
     <div class="intro-container">
       <div id="introCarousel" class="carousel  slide carousel-fade" data-ride="carousel">
 
