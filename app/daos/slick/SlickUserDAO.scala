@@ -10,7 +10,7 @@ import slick.jdbc.JdbcProfile
 import com.mohiva.play.silhouette.api.LoginInfo
 
 import daos.UserDAO
-import models.{User, UserRole}
+import models.User
 
 class SlickUserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec : ExecutionContext) extends UserDAO {
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
@@ -18,19 +18,12 @@ class SlickUserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
   import dbConfig._
   import profile.api._
 
-  private implicit val roleColumnType = MappedColumnType.base[UserRole.UserRole, String](
-      { r => r.toString },
-      { s => UserRole.values.find(_.toString() == s).get }
-  )
-
   private class Users(tag : Tag) extends Table[User](tag, "client_user") {
     def id = column[UUID]("id", O.PrimaryKey)
-    def clientId = column[UUID]("client_id")
-    def role = column[UserRole.UserRole]("role")
-    def email = column[String]("email")
-    def password = column[String]("password")
+    def username = column[String]("username")
+    def name = column[String]("name")
 
-    def * = (id, clientId, role, email, password) <> (User.tupled, User.unapply)
+    def * = (id, username, name) <> (User.tupled, User.unapply)
   }
 
   private val users = TableQuery[Users]
@@ -40,7 +33,7 @@ class SlickUserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
   }
 
   def retrieve(loginInfo : LoginInfo) : Future[Option[User]] = db.run {
-    users.filter(user => user.email === loginInfo.providerID && user.password === loginInfo.providerKey).result.headOption
+    users.filter(user => user.username === loginInfo.providerKey).result.headOption
   }
 
   def find(id : UUID) : Future[Option[User]] = db.run {

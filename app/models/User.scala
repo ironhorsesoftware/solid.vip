@@ -4,20 +4,10 @@ import java.util.UUID
 
 import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
 
-object UserRole extends Enumeration {
-  type UserRole = Value
-  val Admin = Value("ADMIN")
-  val Developer = Value("DEVELOPER")
-}
+case class User(id : UUID, username : String, name : String) extends Identity
 
-case class User(id : UUID, clientId : UUID, role : UserRole.UserRole, email : String, password : String) extends Identity {
-  def loginInfo : LoginInfo = {
-    LoginInfo(email, password)
-  }
-}
-
-object User extends Function5[UUID, UUID, UserRole.UserRole, String, String, User] {
-  def apply(id : UUID, clientId : UUID, role : UserRole.UserRole, loginInfo : LoginInfo) : User = {
-     User(id, clientId, role, loginInfo.providerID, loginInfo.providerKey)
+object User extends Function3[UUID, String, String, User] {
+  def apply(id : UUID, loginInfo : LoginInfo, name : String) : User = {
+     User(id, loginInfo.providerKey, name)
   }
 }
