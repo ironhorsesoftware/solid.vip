@@ -38,19 +38,19 @@ import play.api.Configuration
 import play.api.mvc.{Cookie, CookieHeaderEncoding}
 import play.api.libs.ws.WSClient
 
-import daos.{UserDAO, CredentialsDAO}
-import daos.slick.{SlickUserDAO, SlickCredentialsDAO}
-import models.User
+import daos.{MemberDAO, CredentialsDAO}
+import daos.slick.{SlickMemberDAO, SlickCredentialsDAO}
+import models.Member
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait InteractiveEnv extends Env {
-  type I = User
+  type I = Member
   type A = CookieAuthenticator
 }
 
 trait ApiEnv extends Env {
-  type I = User
+  type I = Member
   type A = JWTAuthenticator
 }
 
@@ -76,7 +76,7 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     }
 
   override def configure() {
-    bind[UserDAO].to[SlickUserDAO]
+    bind[MemberDAO].to[SlickMemberDAO]
     bind[CredentialsDAO].to[SlickCredentialsDAO]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[CredentialsDAO]
     bind[Silhouette[InteractiveEnv]].to[SilhouetteProvider[InteractiveEnv]]
@@ -99,7 +99,7 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
 
   @Provides
   def provideInteractiveEnvironment(
-      userService: UserDAO,
+      userService: MemberDAO,
       authenticatorService: AuthenticatorService[CookieAuthenticator],
       eventBus: EventBus) : Environment[InteractiveEnv] = {
     Environment[InteractiveEnv](userService, authenticatorService, Seq(), eventBus)
