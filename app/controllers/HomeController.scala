@@ -36,8 +36,7 @@ class HomeController @Inject()(cc: ControllerComponents, mailerClient: MailerCli
         data => {
           val msgBuilder = new StringBuilder(data.name)
           msgBuilder.append("\nE-Mail: ").append(data.email)
-          msgBuilder.append("\nCompany: ").append(data.company).append("\n\n")
-          msgBuilder.append(data.content)
+          msgBuilder.append("\n\n").append(data.content)
 
           mailerClient.send(Email(
               subject = data.subject,
