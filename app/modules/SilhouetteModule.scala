@@ -9,7 +9,8 @@ import com.google.inject.{ AbstractModule, Provides }
 import com.mohiva.play.silhouette.api.{ Env, Environment, EventBus, Silhouette, SilhouetteProvider }
 import com.mohiva.play.silhouette.api.crypto.{Signer, Crypter, CrypterAuthenticatorEncoder}
 import com.mohiva.play.silhouette.api.services.{AuthenticatorService, AvatarService}
-import com.mohiva.play.silhouette.api.util.{CacheLayer, PasswordHasher, FingerprintGenerator, IDGenerator, Clock}
+import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
+import com.mohiva.play.silhouette.api.util.{CacheLayer, PasswordHasherRegistry, FingerprintGenerator, IDGenerator, Clock, PasswordInfo}
 import com.mohiva.play.silhouette.api.util.{HTTPLayer, PlayHTTPLayer}
 import com.mohiva.play.silhouette.crypto.{JcaSigner, JcaSignerSettings, JcaCrypter, JcaCrypterSettings}
 import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, CookieAuthenticatorSettings, CookieAuthenticatorService}
@@ -23,7 +24,9 @@ import com.mohiva.play.silhouette.impl.providers.oauth2.{GitHubProvider, LinkedI
 import com.mohiva.play.silhouette.impl.providers.state.{ CsrfStateItemHandler, CsrfStateSettings }
 import com.mohiva.play.silhouette.impl.services.GravatarService
 import com.mohiva.play.silhouette.impl.util.{PlayCacheLayer, DefaultFingerprintGenerator, SecureRandomIDGenerator}
-import com.mohiva.play.silhouette.password.BCryptPasswordHasher
+import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
+import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
+import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
 import com.typesafe.config.Config
 
 import net.ceedubs.ficus.Ficus._
@@ -35,8 +38,8 @@ import play.api.Configuration
 import play.api.mvc.{Cookie, CookieHeaderEncoding}
 import play.api.libs.ws.WSClient
 
-import daos.UserDAO
-import daos.slick.SlickUserDAO
+import daos.{UserDAO, CredentialsDAO}
+import daos.slick.{SlickUserDAO, SlickCredentialsDAO}
 import models.User
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -74,11 +77,12 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
 
   override def configure() {
     bind[UserDAO].to[SlickUserDAO]
+    bind[CredentialsDAO].to[SlickCredentialsDAO]
+    bind[DelegableAuthInfoDAO[PasswordInfo]].to[CredentialsDAO]
     bind[Silhouette[InteractiveEnv]].to[SilhouetteProvider[InteractiveEnv]]
     //bind[Silhouette[ApiEnv]].to[SilhouetteProvider[ApiEnv]]
 
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
-    bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[EventBus].toInstance(EventBus())
     bind[Clock].toInstance(Clock())
@@ -148,6 +152,16 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     val config = configuration.underlying.as[JcaCrypterSettings]("silhouette.authenticator.crypter")
 
     new JcaCrypter(config)
+  }
+
+  @Provides
+  def providePasswordHasherRegistry(): PasswordHasherRegistry = {
+    PasswordHasherRegistry(new BCryptSha256PasswordHasher(), Seq(new BCryptPasswordHasher()))
+  }
+
+  @Provides
+  def provideAuthInfoRepository(passwordInfoDAO: DelegableAuthInfoDAO[PasswordInfo]) : AuthInfoRepository = {
+    new DelegableAuthInfoRepository(passwordInfoDAO)
   }
 
   /**
