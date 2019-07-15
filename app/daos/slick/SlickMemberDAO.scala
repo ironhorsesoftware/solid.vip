@@ -18,7 +18,7 @@ class SlickMemberDAO @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   import dbConfig._
   import profile.api._
 
-  private class Users(tag : Tag) extends Table[Member](tag, "client_user") {
+  private class Users(tag : Tag) extends Table[Member](tag, "member") {
     def id = column[UUID]("id", O.PrimaryKey)
     def username = column[String]("username")
     def name = column[String]("name")
