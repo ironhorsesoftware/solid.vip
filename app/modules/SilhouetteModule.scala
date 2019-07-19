@@ -8,7 +8,7 @@ import com.google.inject.name.Named
 import com.google.inject.{ AbstractModule, Provides }
 import com.mohiva.play.silhouette.api.{ Env, Environment, EventBus, Silhouette, SilhouetteProvider }
 import com.mohiva.play.silhouette.api.crypto.{Signer, Crypter, CrypterAuthenticatorEncoder}
-import com.mohiva.play.silhouette.api.services.{AuthenticatorService, AvatarService}
+import com.mohiva.play.silhouette.api.services.{AuthenticatorService}
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.{CacheLayer, PasswordHasherRegistry, FingerprintGenerator, IDGenerator, Clock, PasswordInfo}
 import com.mohiva.play.silhouette.api.util.{HTTPLayer, PlayHTTPLayer}
@@ -16,13 +16,12 @@ import com.mohiva.play.silhouette.crypto.{JcaSigner, JcaSignerSettings, JcaCrypt
 import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, CookieAuthenticatorSettings, CookieAuthenticatorService}
 import com.mohiva.play.silhouette.impl.authenticators.{JWTAuthenticator, JWTAuthenticatorSettings, JWTAuthenticatorService}
 import com.mohiva.play.silhouette.impl.providers.{ OAuth1TokenSecretProvider, OAuth1Settings, OAuth2Settings}
-import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, DefaultSocialStateHandler }
+import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, DefaultSocialStateHandler, SocialProviderRegistry }
 import com.mohiva.play.silhouette.impl.providers.oauth1.TwitterProvider
 import com.mohiva.play.silhouette.impl.providers.oauth1.secrets.{CookieSecretProvider, CookieSecretSettings}
 import com.mohiva.play.silhouette.impl.providers.oauth1.services.PlayOAuth1Service
 import com.mohiva.play.silhouette.impl.providers.oauth2.{GitHubProvider, LinkedInProvider}
 import com.mohiva.play.silhouette.impl.providers.state.{ CsrfStateItemHandler, CsrfStateSettings }
-import com.mohiva.play.silhouette.impl.services.GravatarService
 import com.mohiva.play.silhouette.impl.util.{PlayCacheLayer, DefaultFingerprintGenerator, SecureRandomIDGenerator}
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
 import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
@@ -38,9 +37,10 @@ import play.api.Configuration
 import play.api.mvc.{Cookie, CookieHeaderEncoding}
 import play.api.libs.ws.WSClient
 
-import daos.{MemberDAO, CredentialsDAO}
+import daos.{MemberDAO, CredentialsDAO, AuthTokenDAO, AuthTokenDAOImpl}
 import daos.slick.{SlickMemberDAO, SlickCredentialsDAO}
 import models.Member
+import services.{AuthTokenService, AuthTokenServiceImpl, MemberService, MemberServiceImpl}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -76,11 +76,16 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     }
 
   override def configure() {
+    bind[AuthTokenDAO].to[AuthTokenDAOImpl]
+    bind[AuthTokenService].to[AuthTokenServiceImpl]
+
     bind[MemberDAO].to[SlickMemberDAO]
+    bind[MemberService].to[MemberServiceImpl]
+
     bind[CredentialsDAO].to[SlickCredentialsDAO]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[CredentialsDAO]
+
     bind[Silhouette[InteractiveEnv]].to[SilhouetteProvider[InteractiveEnv]]
-    //bind[Silhouette[ApiEnv]].to[SilhouetteProvider[ApiEnv]]
 
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
@@ -264,15 +269,17 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     new JcaCrypter(config)
   }
 
-
-  /**
-   * Provides the avatar service.
-   *
-   * @param httpLayer The HTTP layer implementation.
-   * @return The avatar service implementation.
-   */
   @Provides
-  def provideAvatarService(httpLayer: HTTPLayer): AvatarService = new GravatarService(httpLayer)
+  def provideSocialProviderRegistry(
+    linkedInProvider : LinkedInProvider,
+    gitHubProvider : GitHubProvider,
+    twitterProvider: TwitterProvider): SocialProviderRegistry = {
 
+    SocialProviderRegistry(Seq(
+      linkedInProvider,
+      gitHubProvider,
+      twitterProvider
+    ))
+  }
 
 }

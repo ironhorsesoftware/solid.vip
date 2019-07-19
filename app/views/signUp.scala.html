@@ -1,0 +1,30 @@
+@import play.api.data.Form
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import controllers.AssetsFinder
+@import forms.SignUpForm.Data
+
+@(signUpForm: Form[Data])(implicit request: RequestHeader, messages: Messages, assets: AssetsFinder)
+
+@implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-12", "col-md-12") }
+
+@main(messages("sign.up.title")) {
+    <fieldset class="col-md-6 offset-md-3">
+        <legend>@messages("sign.up.account")</legend>
+        @helper.form(action = controllers.routes.SignUpController.submit()) {
+            @helper.CSRF.formField
+            @b4.text(signUpForm("username"), '_hiddenLabel -> messages("username"), 'placeholder -> messages("username"), 'class -> "form-control input-lg")
+            @b4.text(signUpForm("name"), '_hiddenLabel -> messages("full.name"), 'placeholder -> messages("full.name"), 'class -> "form-control input-lg")
+            @b4.text(signUpForm("email"), '_hiddenLabel -> messages("email"), 'placeholder -> messages("email"), 'class -> "form-control input-lg")
+            @passwordStrength(signUpForm("password"), '_hiddenLabel -> messages("password"), 'placeholder -> messages("password"), 'class -> "form-control input-lg")
+            <div class="form-group">
+                <div>
+                    <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">@messages("sign.up")</button>
+                </div>
+            </div>
+            <div class="sign-in-now">
+                <p>@messages("already.a.member") <a href="@controllers.routes.SignInController.view">@messages("sign.in.now")</a></p>
+            </div>
+        }
+    </fieldset>
+}

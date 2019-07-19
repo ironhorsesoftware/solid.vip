@@ -4,7 +4,9 @@ import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+import play.api.Logger
 import play.api.db.slick.DatabaseConfigProvider
+
 import slick.jdbc.JdbcProfile
 
 import com.mohiva.play.silhouette.api.LoginInfo
@@ -13,42 +15,48 @@ import daos.MemberDAO
 import models.Member
 
 class SlickMemberDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec : ExecutionContext) extends MemberDAO {
+  private val logger = Logger("SlickMemberDAO")
+
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
 
-  private class Users(tag : Tag) extends Table[Member](tag, "member") {
+  private class Members(tag : Tag) extends Table[Member](tag, "members") {
     def id = column[UUID]("id", O.PrimaryKey)
     def username = column[String]("username")
     def name = column[String]("name")
+    def email = column[Option[String]]("email")
+    def activated = column[Boolean]("is_activated")
 
-    def * = (id, username, name) <> (Member.tupled, Member.unapply)
+    def * = (id, username, name, email, activated) <> (Member.tupled, Member.unapply)
   }
 
-  private val users = TableQuery[Users]
+  private val members = TableQuery[Members]
 
-  def create(user : Member) : Future[UUID] = db.run {
-      (users returning users.map(_.id)) += user
+  def create(member : Member) : Future[UUID] = db.run {
+      (members returning members.map(_.id)) += member
   }
 
   def retrieve(loginInfo : LoginInfo) : Future[Option[Member]] = db.run {
-    users.filter(user => user.username === loginInfo.providerKey).result.headOption
+    members.filter(user => user.username === loginInfo.providerKey).result.headOption
   }
 
   def find(id : UUID) : Future[Option[Member]] = db.run {
-    users.filter(user => user.id === id).result.headOption
+    members.filter(member => member.id === id).result.headOption
   }
 
-  def update(user : Member) : Future[Member] = db.run {
-    for {
-      _ <- users.update(user)
-      usr <- users.filter(usr => usr.id === user.id).result.head
-    } yield usr
+  def update(member : Member) : Future[Member] = {
+    db.run {
+      for {
+        _ <- members.filter(mbr => mbr.id === member.id).update(member)
+       updatedMember <- members.filter(mbr => mbr.id === member.id).result.head 
+      } yield updatedMember
+    }
   }
 
   def delete(id : UUID) : Future[Unit] = db.run {
-    val q = for { user <- users if user.id === id } yield user
+    val q = for { member <- members if member.id === id } yield member
     q.delete.map(_ => Unit)
   }
 }
