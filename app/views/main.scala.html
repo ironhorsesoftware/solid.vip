@@ -35,9 +35,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse flex-grow-1 text-right" id="navbarSupportedContent">
+			@member.map { m =>
+			   <li>Welcome, @m.name</li>
+			}
                 <ul class="navbar-nav ml-auto flex-nowrap">
             @member.map { m =>
-              <li>Welcome, @m.name</li>
+                    <li><a href="@routes.SignInController.signOut">Sign Out</a></li>
             }.getOrElse {
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

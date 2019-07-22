@@ -9,14 +9,19 @@ import play.api.i18n.I18nSupport
 import play.api.libs.mailer.{ Email, MailerClient, AttachmentFile }
 import play.api.mvc._
 
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.actions.UserAwareRequest
+
 import forms.ContactForm
+import models.Member
+import modules.InteractiveEnv
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents, mailerClient: MailerClient) extends AbstractController(cc) with I18nSupport {
+class HomeController @Inject()(cc: ControllerComponents, mailerClient: MailerClient, silhouette : Silhouette[InteractiveEnv]) extends AbstractController(cc) with I18nSupport {
 
   /**
    * Create an Action to render an HTML page.
@@ -25,9 +30,9 @@ class HomeController @Inject()(cc: ControllerComponents, mailerClient: MailerCli
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
-  def index() = Action { implicit request: Request[AnyContent] =>
+  def index() = silhouette.UserAwareAction { implicit request : UserAwareRequest[InteractiveEnv, AnyContent] =>
     // request.domain -> The domain.  You can get the subdomain from this.
-    Ok(views.html.index(ContactForm.form))
+    Ok(views.html.index(ContactForm.form, request.identity))
   }
 
   def contact = Action { implicit request => 

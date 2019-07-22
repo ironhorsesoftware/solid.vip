@@ -56,10 +56,13 @@
 	
 	      <nav id="nav-menu-container">
 	        <ul class="nav-menu">
+            @member.map { m =>
+              <li>Welcome, @m.name</li>
+            }
 	          <li class="menu-active"><a href="#intro">Home</a></li>
 	          <!--<li><a href="#portfolio">Portfolio</a></li>-->
             @member.map { m =>
-              <li>Welcome, @m.name</li>
+              <li><a href="@routes.SignInController.signOut">Sign Out</a></li>
             }.getOrElse {
 	          <li class="menu-has-children"><a href="#call-to-action">Get Started</a>
 	            <ul>
