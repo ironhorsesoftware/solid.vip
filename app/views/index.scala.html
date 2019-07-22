@@ -57,7 +57,7 @@
 	      <nav id="nav-menu-container">
 	        <ul class="nav-menu">
 @member.map { m =>
-              <li class="menu-has-children"><a href="https://@(m.username).solid.vip">Welcome, @m.name</a>
+              <li class="menu-has-children"><a href="http://@(m.username).solid.vip">Welcome, @m.name</a>
                   <ul>
                       <li><a href="@controllers.routes.ChangePasswordController.view">@messages("change.password")</a></li>
                       <li><a href="@routes.SignInController.signOut">@messages("sign.out")</a></li>
