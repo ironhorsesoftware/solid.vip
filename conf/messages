@@ -75,6 +75,8 @@ vk = VK
 xing = Xing
 yahoo = Yahoo
 
+profile.builder.link = Build Profile
+
 ##########
 # Emails
 ##########

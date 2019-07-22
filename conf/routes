@@ -4,10 +4,11 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
-POST    /contact                    controllers.HomeController.contact
+GET         /                                controllers.HomeController.index
+POST        /contact                         controllers.HomeController.contact
 
 GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)
+GET         /profile/builder                 controllers.ProfileBuilderController.view
 
 GET         /signUp                          controllers.SignUpController.view
 POST        /signUp                          controllers.SignUpController.submit
