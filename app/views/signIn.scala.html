@@ -28,16 +28,5 @@
             <p class="not-a-member">@messages("not.a.member") <a href="@controllers.routes.SignUpController.view">@messages("sign.up.now")</a> | <a href="@controllers.routes.ForgotPasswordController.view()" title="@messages("forgot.your.password")">@messages("forgot.your.password")</a></p>
         </div>
 
-        @if(socialProviders.providers.nonEmpty) {
-            <div class="social-providers">
-                <p>@messages("or.use.social")</p>
-                <div>
-                @for(p <- socialProviders.providers) {
-                    <a href="@controllers.routes.SocialAuthController.authenticate(p.id)" class="provider @p.id" title="@messages(p.id)"><img src="@assets.path(s"images/providers/${p.id}.png")" width="64px" height="64px" alt="@messages(p.id)"></a>
-                }
-                </div>
-            </div>
-        }
-
     </fieldset>
 }

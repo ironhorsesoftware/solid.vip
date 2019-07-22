@@ -13,7 +13,10 @@ import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import models.Member
 import modules.InteractiveEnv
 
-class ProfileBuilderController @Inject() (cc: ControllerComponents, silhouette : Silhouette[InteractiveEnv], socialProviderRegistry: SocialProviderRegistry) extends AbstractController(cc) with I18nSupport with Logging { 
+class ProfileBuilderController @Inject()
+    (cc: ControllerComponents, silhouette : Silhouette[InteractiveEnv], socialProviderRegistry: SocialProviderRegistry)
+    (implicit assets: AssetsFinder)
+    extends AbstractController(cc) with I18nSupport with Logging { 
 
   def view = silhouette.SecuredAction { implicit request : SecuredRequest[InteractiveEnv, AnyContent] =>
     Ok(views.html.profileBuilder(request.identity, socialProviderRegistry))

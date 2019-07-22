@@ -2,7 +2,7 @@
 
 @import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 
-@(member : models.Member, socialProviders: SocialProviderRegistry)(implicit request : RequestHeader, messages : Messages, flash : Flash)
+@(member : models.Member, socialProviders: SocialProviderRegistry)(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +25,21 @@
         @navbar(Some(member))
 
         <main class="container">
-		</main>
+            <fieldset class="col-md-6 offset-md-3">
+
+@if(socialProviders.providers.nonEmpty) {
+                <div class="social-providers">
+                    <p>@messages("or.use.social")</p>
+                    <div>
+    @for(p <- socialProviders.providers) {
+                        <a href="@controllers.routes.SocialAuthController.authenticate(p.id)" class="provider @p.id" title="@messages(p.id)"><img src="@assets.path(s"images/providers/${p.id}.png")" width="64px" height="64px" alt="@messages(p.id)"></a>
+    }
+                    </div>
+                </div>
+}
+
+            </fieldset>
+        </main>
 
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
