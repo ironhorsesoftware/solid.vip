@@ -1,4 +1,4 @@
-@(contactForm : Form[forms.ContactForm.Data])(implicit header: RequestHeader, flash : Flash, messagesProvider : MessagesProvider)
+@(contactForm : Form[forms.ContactForm.Data], member : Option[models.Member] = None)(implicit header: RequestHeader, flash : Flash, messagesProvider : MessagesProvider)
 
 @import helper._
 
@@ -58,6 +58,9 @@
 	        <ul class="nav-menu">
 	          <li class="menu-active"><a href="#intro">Home</a></li>
 	          <!--<li><a href="#portfolio">Portfolio</a></li>-->
+            @member.map { m =>
+              <li>Welcome, @m.name</li>
+            }.getOrElse {
 	          <li class="menu-has-children"><a href="#call-to-action">Get Started</a>
 	            <ul>
 	              <li><a href="@routes.SignUpController.view">Register</a></li>
@@ -65,6 +68,7 @@
 	              <li><a href="#">View on GitHub</a></li>
 	            </ul>
 	          </li>
+	        }
 	          <li><a href="#contact">Contact</a></li>
 	        </ul>
 	      </nav><!-- #nav-menu-container -->

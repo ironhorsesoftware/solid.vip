@@ -4,7 +4,7 @@
  * two arguments, a `String` for the title of the page and an `Html`
  * object to insert into the body of the page.
  *@
-@(title: String)(content: Html)(implicit request: RequestHeader, messages: Messages)
+@(title: String, member : Option[models.Member] = None)(content: Html)(implicit request: RequestHeader, messages: Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,6 +36,9 @@
             </button>
             <div class="collapse navbar-collapse flex-grow-1 text-right" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto flex-nowrap">
+            @member.map { m =>
+              <li>Welcome, @m.name</li>
+            }.getOrElse {
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Get Started
@@ -48,6 +51,7 @@
                         </div>
                     </li>
                 </ul>
+            }
             </div>
         </nav>
         <main class="container">
