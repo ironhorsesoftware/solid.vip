@@ -1,4 +1,4 @@
-@(contactForm : Form[forms.ContactForm.Data], member : Option[models.Member] = None)(implicit header: RequestHeader, flash : Flash, messagesProvider : MessagesProvider)
+@(contactForm : Form[forms.ContactForm.Data], member : Option[models.Member] = None)(implicit header: RequestHeader, flash : Flash, messages : Messages)
 
 @import helper._
 
@@ -56,14 +56,18 @@
 	
 	      <nav id="nav-menu-container">
 	        <ul class="nav-menu">
-            @member.map { m =>
-              <li>Welcome, @m.name</li>
-            }
+@member.map { m =>
+              <li class="menu-has-children">Welcome, @m.name
+                  <ul>
+                      <li><a href="@controllers.routes.ChangePasswordController.view">@messages("change.password")</a></li>
+                      <li><a href="@routes.SignInController.signOut">@messages("sign.out")</a></li>
+                  </ul>
+              </li>
+}
 	          <li class="menu-active"><a href="#intro">Home</a></li>
 	          <!--<li><a href="#portfolio">Portfolio</a></li>-->
-            @member.map { m =>
-              <li><a href="@routes.SignInController.signOut">Sign Out</a></li>
-            }.getOrElse {
+            
+@if(member.isEmpty) {
 	          <li class="menu-has-children"><a href="#call-to-action">Get Started</a>
 	            <ul>
 	              <li><a href="@routes.SignUpController.view">Register</a></li>
@@ -71,7 +75,7 @@
 	              <li><a href="#">View on GitHub</a></li>
 	            </ul>
 	          </li>
-	        }
+}
 	          <li><a href="#contact">Contact</a></li>
 	        </ul>
 	      </nav><!-- #nav-menu-container -->

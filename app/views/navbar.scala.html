@@ -1,5 +1,5 @@
 @* navbar Template File *@
-@(member : Option[models.Member])
+@(member : Option[models.Member])(implicit messages : Messages)
 
 <nav class="navbar navbar-dark bg-dark navbar-expand-md">
     <a class="navbar-brand" href="@routes.HomeController.index">Solid.VIP</a>
@@ -8,11 +8,16 @@
     </button>
     <div class="collapse navbar-collapse flex-grow-1 text-right" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto flex-nowrap">
-@member.map { m =>
-            <li>Welcome, @m.name</li>
-            <li><a href="@routes.SignInController.signOut">Sign Out</a></li>
-}.getOrElse {
             <li class="nav-item dropdown">
+@member.map { m =>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Welcome, @m.name
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="@controllers.routes.ChangePasswordController.view">@messages("change.password")</a>
+                    <a class="dropdown-item" href="@controllers.routes.SignInController.signOut">@messages("sign.out")</a>
+                </div>
+}.getOrElse {
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Get Started
                 </a>
@@ -22,8 +27,8 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">View on GitHub</a>
                 </div>
+}
             </li>
         </ul>
-}
    </div>
 </nav>
