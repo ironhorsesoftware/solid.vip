@@ -19,11 +19,6 @@ CREATE TABLE credentials (
 	password_salt   TEXT
 );
 
-INSERT INTO credentials
-  (provider_key, password, password_hasher, password_salt)
-VALUES
-  ('mpigott', '$2a$10$/5pkMU3b6doj2EfsmEbp.uH3l02ecFUSzbFUKn7j4mvBGHIoh2HHW', 'bcrypt-sha256', NULL);
-
 -- !Downs
 
 DROP TABLE credentials;
