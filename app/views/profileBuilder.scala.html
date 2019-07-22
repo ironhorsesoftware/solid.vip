@@ -1,0 +1,30 @@
+@* profileBuilder Template File *@
+
+@import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+
+@(member : models.Member, socialProviders: SocialProviderRegistry)(implicit request : RequestHeader, messages : Messages, flash : Flash)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        @* Here's where we render the page title `String`. *@
+        <title>Profile Builder</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Fonts -->
+        <link href="//fonts.googleapis.com/css?family=Roboto|Montserrat:400,700|Open+Sans:400,300,600" rel="stylesheet">
+        <link href="//cdnjs.cloudflare.com/ajax/libs/ionicons/1.5.2/css/ionicons.min.css" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        @navbar(Some(member))
+
+        <main class="container">
+		</main>
+	</body>
+</html>

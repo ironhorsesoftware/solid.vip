@@ -1,0 +1,29 @@
+@* navbar Template File *@
+@(member : Option[models.Member])
+
+<nav class="navbar navbar-dark bg-dark navbar-expand-md">
+    <a class="navbar-brand" href="@routes.HomeController.index">Solid.VIP</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse flex-grow-1 text-right" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto flex-nowrap">
+@member.map { m =>
+            <li>Welcome, @m.name</li>
+            <li><a href="@routes.SignInController.signOut">Sign Out</a></li>
+}.getOrElse {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Get Started
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="@routes.SignUpController.view">Register</a>
+                    <a class="dropdown-item" href="@routes.SignInController.view">Sign In</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">View on GitHub</a>
+                </div>
+            </li>
+        </ul>
+}
+   </div>
+</nav>
