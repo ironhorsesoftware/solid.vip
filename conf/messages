@@ -49,7 +49,6 @@ current.password = Current password
 new.password = New password
 
 remember.me = Remember my login on this computer
-or.use.social = Or use your existing account on one of the following services to sign in:
 forgot.password.info = Please enter your email address and we will send you an email with further instructions to reset your password.
 strong.password.info = Strong passwords include numbers, letters and punctuation marks.
 current.password.invalid = The entered password is invalid. Please enter the correct password!
@@ -76,6 +75,7 @@ xing = Xing
 yahoo = Yahoo
 
 profile.builder.link = Build Profile
+profile.builder.social = Import your profile from the following services:
 
 ##########
 # Emails
