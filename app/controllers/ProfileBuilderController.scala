@@ -118,6 +118,9 @@ query {
   }
 
   def collectGitHubProfile(authInfo : OAuth2Info, profile : CommonSocialProfile) : Future[String] = {
+    logger.info("authInfo: ${authInfo}")
+    logger.info("profile: ${profile}")
+
     val request =
       ws.url(config.get[String]("github.api.endpoint")).addHttpHeaders("Authorization" -> s"bearer ${authInfo.accessToken}")
 
