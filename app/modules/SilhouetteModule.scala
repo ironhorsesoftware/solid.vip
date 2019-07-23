@@ -168,9 +168,23 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     PasswordHasherRegistry(new BCryptSha256PasswordHasher(), Seq(new BCryptPasswordHasher()))
   }
 
+  /**
+   * Provides the auth info repository.
+   *
+   * @param passwordInfoDAO The implementation of the delegable password auth info DAO.
+   * @param oauth1InfoDAO The implementation of the delegable OAuth1 auth info DAO.
+   * @param oauth2InfoDAO The implementation of the delegable OAuth2 auth info DAO.
+   * @param openIDInfoDAO The implementation of the delegable OpenID auth info DAO.
+   * @return The auth info repository instance.
+   */
   @Provides
-  def provideAuthInfoRepository(passwordInfoDAO: DelegableAuthInfoDAO[PasswordInfo]) : AuthInfoRepository = {
-    new DelegableAuthInfoRepository(passwordInfoDAO)
+  def provideAuthInfoRepository(
+    passwordInfoDAO: DelegableAuthInfoDAO[PasswordInfo],
+    oauth1InfoDAO: DelegableAuthInfoDAO[OAuth1Info],
+    oauth2InfoDAO: DelegableAuthInfoDAO[OAuth2Info],
+    openIDInfoDAO: DelegableAuthInfoDAO[OpenIDInfo]): AuthInfoRepository = {
+
+    new DelegableAuthInfoRepository(passwordInfoDAO, oauth1InfoDAO, oauth2InfoDAO, openIDInfoDAO)
   }
 
   /**
