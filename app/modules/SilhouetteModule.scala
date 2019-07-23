@@ -15,7 +15,7 @@ import com.mohiva.play.silhouette.api.util.{HTTPLayer, PlayHTTPLayer}
 import com.mohiva.play.silhouette.crypto.{JcaSigner, JcaSignerSettings, JcaCrypter, JcaCrypterSettings}
 import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, CookieAuthenticatorSettings, CookieAuthenticatorService}
 import com.mohiva.play.silhouette.impl.authenticators.{JWTAuthenticator, JWTAuthenticatorSettings, JWTAuthenticatorService}
-import com.mohiva.play.silhouette.impl.providers.{ OAuth1TokenSecretProvider, OAuth1Settings, OAuth2Settings}
+import com.mohiva.play.silhouette.impl.providers.{ OAuth1TokenSecretProvider, OAuth1Settings, OAuth1Info, OAuth2Settings, OAuth2Info, OpenIDInfo}
 import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, DefaultSocialStateHandler, SocialProviderRegistry }
 import com.mohiva.play.silhouette.impl.providers.oauth1.TwitterProvider
 import com.mohiva.play.silhouette.impl.providers.oauth1.secrets.{CookieSecretProvider, CookieSecretSettings}
@@ -24,7 +24,7 @@ import com.mohiva.play.silhouette.impl.providers.oauth2.{GitHubProvider, LinkedI
 import com.mohiva.play.silhouette.impl.providers.state.{ CsrfStateItemHandler, CsrfStateSettings }
 import com.mohiva.play.silhouette.impl.util.{PlayCacheLayer, DefaultFingerprintGenerator, SecureRandomIDGenerator}
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
-import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
+import com.mohiva.play.silhouette.persistence.daos.{DelegableAuthInfoDAO, InMemoryAuthInfoDAO}
 import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
 import com.typesafe.config.Config
 
@@ -84,6 +84,10 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
 
     bind[CredentialsDAO].to[SlickCredentialsDAO]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[CredentialsDAO]
+
+    bind[DelegableAuthInfoDAO[OAuth1Info]].toInstance(new InMemoryAuthInfoDAO[OAuth1Info])
+    bind[DelegableAuthInfoDAO[OAuth2Info]].toInstance(new InMemoryAuthInfoDAO[OAuth2Info])
+    bind[DelegableAuthInfoDAO[OpenIDInfo]].toInstance(new InMemoryAuthInfoDAO[OpenIDInfo])
 
     bind[Silhouette[InteractiveEnv]].to[SilhouetteProvider[InteractiveEnv]]
 
