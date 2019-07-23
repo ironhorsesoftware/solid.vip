@@ -45,7 +45,8 @@ libraryDependencies ++= Seq(
     "org.bouncycastle"     % "bcprov-jdk15on"                  % bouncyCastleVersion,
     guice,
     caffeine,
-    evolutions
+    evolutions,
+    ws
 )
 
 
