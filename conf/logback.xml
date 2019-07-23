@@ -26,6 +26,7 @@
 
   <logger name="play" level="INFO" />
   <logger name="application" level="DEBUG" />
+  <logger name="controllers.ProfileBuilderController" level="INFO" />
 
   <root level="INFO">
     <!--<appender-ref ref="ASYNCFILE" />-->

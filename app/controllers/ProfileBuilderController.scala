@@ -7,6 +7,7 @@ import scala.concurrent.{Future, ExecutionContext}
 import play.api.{Logging, Configuration}
 import play.api.http.HttpEntity
 import play.api.i18n.{I18nSupport, Messages}
+import play.api.libs.json._
 import play.api.libs.ws._
 import play.api.mvc.{ControllerComponents, AbstractController, AnyContent, Request}
 
@@ -54,9 +55,11 @@ class ProfileBuilderController @Inject()
     }
   }
 
-  val gitHubQuery = """
+  def buildGitHubQuery(login : String) : String = {
+    val query =
+s"""
 query {
-  user(login:"mikepigott") {
+  user(login:"${login}") {
     name
     avatarUrl
     bio
@@ -105,14 +108,24 @@ query {
     }
   }
 }
-  """
+  """    
+
+    val jsonQuery = Json.obj(
+        "query" -> query
+    )
+
+    jsonQuery.toString
+  }
 
   def collectGitHubProfile(authInfo : OAuth2Info, profile : CommonSocialProfile) : Future[String] = {
     val request =
       ws.url(config.get[String]("github.api.endpoint")).addHttpHeaders("Authorization" -> s"bearer ${authInfo.accessToken}")
 
-    request.post(gitHubQuery).flatMap { response =>
-      logger.logger.info(response.body)
+    val query = buildGitHubQuery(profile.loginInfo.providerKey)
+
+    logger.info("Sending GitHub request: " + query)
+    request.post(query).flatMap { response =>
+      logger.info(response.body)
       Future.failed(new UnsupportedOperationException())
     }
   }
