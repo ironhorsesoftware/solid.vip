@@ -21,7 +21,7 @@ class SolidLinkedInProvider(
   override protected def buildProfile(authInfo: OAuth2Info): Future[Profile] = {
     httpLayer.url(urls("api")).withHttpHeaders(("Authorization", s"Bearer ${authInfo.accessToken}")).get().flatMap { response =>
       val json = response.json
-      (json \ "errorCode").asOpt[Int] match {
+      (json \ "serviceErrorCode").asOpt[Int] match {
         case Some(error) =>
           val message = (json \ "message").asOpt[String]
           val requestId = (json \ "requestId").asOpt[String]
