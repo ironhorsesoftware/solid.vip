@@ -55,7 +55,7 @@ class ProfileBuilderController @Inject()
     }).recover {
       case e: ProviderException =>
         logger.error("Unexpected provider error", e)
-        Redirect(routes.SignInController.view()).flashing("error" -> Messages("could.not.authenticate"))
+        Redirect(routes.ProfileBuilderController.view()).flashing("error" -> Messages("could.not.authenticate"))
     }
   }
 
