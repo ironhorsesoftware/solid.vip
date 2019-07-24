@@ -17,7 +17,7 @@ class ExtendedGitHubProfileParser extends SocialProfileParser[JsValue, CommonSoc
   val commonParser = new GitHubProfileParser
 
   def parse(json: JsValue, authInfo: OAuth2Info) = {
-    logger.info(s"json: ${json} | authInfo: ${authInfo}")
+    logger.debug(s"json: ${json} | authInfo: ${authInfo}")
     commonParser.parse(json, authInfo).map { profile =>
       profile.copy(loginInfo = LoginInfo(ExtendedGitHubProvider.ID, (json \ "login").as[String]))
     }
