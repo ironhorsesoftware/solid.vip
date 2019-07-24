@@ -11,7 +11,7 @@ import play.api.libs.json._
 import play.api.libs.ws._
 import play.api.mvc.{ControllerComponents, AbstractController, AnyContent, Request}
 
-import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.{Silhouette, AuthInfo}
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.impl.providers.{SocialProvider, SocialProviderRegistry, CommonSocialProfileBuilder, CommonSocialProfile}
@@ -40,7 +40,7 @@ class ProfileBuilderController @Inject()
    */
   def authenticate(provider: String) = silhouette.SecuredAction.async { implicit request: SecuredRequest[InteractiveEnv, AnyContent] =>
     (socialProviderRegistry.get[SocialProvider](provider) match {
-      case Some(p: SocialProvider with CommonSocialProfileBuilder with OAuth2Provider) =>
+      case Some(p: SocialProvider with CommonSocialProfileBuilder) =>
         p.authenticate().flatMap {
           case Left(result) => Future.successful(result)
           case Right(authInfo) => for {
@@ -59,17 +59,15 @@ class ProfileBuilderController @Inject()
     }
   }
 
-  def collectProfile(provider : String, authInfo : OAuth2Info, profile : CommonSocialProfile) : Future[JsValue] = {
+  def collectProfile(provider : String, authInfo : AuthInfo, profile : CommonSocialProfile) : Future[JsValue] = {
     logger.info(s"Collecting profile for provider ${provider}, authInfo = ${authInfo} | profile: ${profile}")
 
     if (provider == ExtendedGitHubProvider.ID) {
-      collectGitHubProfile(authInfo, profile)
+      collectGitHubProfile(authInfo.asInstanceOf[OAuth2Info], profile)
     } else {
       Future.successful(Json.obj(
           "provider" -> JsString(provider),
-          "authInfo" -> Json.obj(
-              "accessToken" -> authInfo.accessToken,
-              "tokenType" -> authInfo.tokenType),
+          "authInfo" -> JsString(authInfo.toString),
           "profile" -> Json.obj(
               "loginInfo" -> Json.obj(
                   "providerId" -> profile.loginInfo.providerID,
