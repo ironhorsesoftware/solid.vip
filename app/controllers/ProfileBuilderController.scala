@@ -21,7 +21,7 @@ import com.mohiva.play.silhouette.impl.providers.oauth2.{LinkedInProvider, Faceb
 
 import models.Member
 import modules.InteractiveEnv
-import services.ExtendedGitHubProvider
+import services.SolidGitHubProvider
 
 class ProfileBuilderController @Inject()
     (cc: ControllerComponents, silhouette : Silhouette[InteractiveEnv], socialProviderRegistry: SocialProviderRegistry, ws : WSClient, config : Configuration)
@@ -62,7 +62,7 @@ class ProfileBuilderController @Inject()
   def collectProfile(provider : String, authInfo : AuthInfo, profile : CommonSocialProfile) : Future[JsValue] = {
     logger.info(s"Collecting profile for provider ${provider}, authInfo = ${authInfo} | profile: ${profile}")
 
-    if (provider == ExtendedGitHubProvider.ID) {
+    if (provider == SolidGitHubProvider.ID) {
       collectGitHubProfile(authInfo.asInstanceOf[OAuth2Info], profile)
     } else {
       Future.successful(Json.obj(

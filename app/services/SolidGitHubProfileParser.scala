@@ -12,14 +12,14 @@ import com.mohiva.play.silhouette.impl.providers.{CommonSocialProfileBuilder, Co
 import com.mohiva.play.silhouette.impl.providers.SocialProfileParser
 import com.mohiva.play.silhouette.impl.providers.oauth2.GitHubProfileParser
 
-class ExtendedGitHubProfileParser extends SocialProfileParser[JsValue, CommonSocialProfile, OAuth2Info] with Logging {
+class SolidGitHubProfileParser extends SocialProfileParser[JsValue, CommonSocialProfile, OAuth2Info] with Logging {
 
   val commonParser = new GitHubProfileParser
 
   def parse(json: JsValue, authInfo: OAuth2Info) = {
     logger.debug(s"json: ${json} | authInfo: ${authInfo}")
     commonParser.parse(json, authInfo).map { profile =>
-      profile.copy(loginInfo = LoginInfo(ExtendedGitHubProvider.ID, (json \ "login").as[String]))
+      profile.copy(loginInfo = LoginInfo(SolidGitHubProvider.ID, (json \ "login").as[String]))
     }
   }
 }

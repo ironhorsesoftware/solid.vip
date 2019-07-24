@@ -5,21 +5,21 @@ import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, OAuth2Sett
 import com.mohiva.play.silhouette.impl.providers.oauth2.{BaseGitHubProvider, GitHubProvider}
 
 
-class ExtendedGitHubProvider (
+class SolidGitHubProvider (
     protected val httpLayer : HTTPLayer,
     protected val stateHandler : SocialStateHandler,
     val settings : OAuth2Settings) extends BaseGitHubProvider with CommonSocialProfileBuilder  {
 
-  override type Self = ExtendedGitHubProvider
+  override type Self = SolidGitHubProvider
 
-  override val profileParser = new ExtendedGitHubProfileParser
+  override val profileParser = new SolidGitHubProfileParser
 
   override def withSettings(f : (Settings) => Settings) = {
-    new ExtendedGitHubProvider(httpLayer, stateHandler, f(settings))
+    new SolidGitHubProvider(httpLayer, stateHandler, f(settings))
   }
 }
 
-object ExtendedGitHubProvider {
+object SolidGitHubProvider {
   /**
    * The error messages.
    */
