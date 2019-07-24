@@ -41,7 +41,7 @@ import daos.{MemberDAO, CredentialsDAO, AuthTokenDAO, AuthTokenDAOImpl}
 import daos.slick.{SlickMemberDAO, SlickCredentialsDAO}
 import models.Member
 import services.{AuthTokenService, AuthTokenServiceImpl, MemberService, MemberServiceImpl}
-import services.SolidGitHubProvider
+import services.{SolidGitHubProvider, SolidLinkedInProvider}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -227,8 +227,8 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
 
 
   @Provides
-  def provideLinkedInProvider(httpLayer: HTTPLayer, socialStateHandler: SocialStateHandler, configuration: Configuration): LinkedInProvider = {
-    new LinkedInProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.linkedin"))
+  def provideLinkedInProvider(httpLayer: HTTPLayer, socialStateHandler: SocialStateHandler, configuration: Configuration): SolidLinkedInProvider = {
+    new SolidLinkedInProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.linkedin"))
   }
 
   @Provides
@@ -299,7 +299,7 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
 
   @Provides
   def provideSocialProviderRegistry(
-    linkedInProvider : LinkedInProvider,
+    linkedInProvider : SolidLinkedInProvider,
     gitHubProvider : SolidGitHubProvider,
     twitterProvider: TwitterProvider,
     facebookProvider : FacebookProvider): SocialProviderRegistry = {
