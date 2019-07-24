@@ -20,7 +20,7 @@ import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, DefaultSoc
 import com.mohiva.play.silhouette.impl.providers.oauth1.TwitterProvider
 import com.mohiva.play.silhouette.impl.providers.oauth1.secrets.{CookieSecretProvider, CookieSecretSettings}
 import com.mohiva.play.silhouette.impl.providers.oauth1.services.PlayOAuth1Service
-import com.mohiva.play.silhouette.impl.providers.oauth2.{GitHubProvider, LinkedInProvider}
+import com.mohiva.play.silhouette.impl.providers.oauth2.{GitHubProvider, LinkedInProvider, FacebookProvider}
 import com.mohiva.play.silhouette.impl.providers.state.{ CsrfStateItemHandler, CsrfStateSettings }
 import com.mohiva.play.silhouette.impl.util.{PlayCacheLayer, DefaultFingerprintGenerator, SecureRandomIDGenerator}
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
@@ -236,6 +236,15 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     new ExtendedGitHubProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.github"))
   }
 
+  @Provides
+  def provideFacebookProvider(
+    httpLayer: HTTPLayer,
+    socialStateHandler: SocialStateHandler,
+    configuration: Configuration): FacebookProvider = {
+
+    new FacebookProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.facebook"))
+  }
+
   /**
    * Provides the Twitter provider.
    *
@@ -292,12 +301,14 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
   def provideSocialProviderRegistry(
     linkedInProvider : LinkedInProvider,
     gitHubProvider : ExtendedGitHubProvider,
-    twitterProvider: TwitterProvider): SocialProviderRegistry = {
+    twitterProvider: TwitterProvider,
+    facebookProvider : FacebookProvider): SocialProviderRegistry = {
 
     SocialProviderRegistry(Seq(
       linkedInProvider,
       gitHubProvider,
-      twitterProvider
+      twitterProvider,
+      facebookProvider
     ))
   }
 

@@ -16,9 +16,12 @@ import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.impl.providers.{SocialProvider, SocialProviderRegistry, CommonSocialProfileBuilder, CommonSocialProfile}
 import com.mohiva.play.silhouette.impl.providers.{OAuth2Info, OAuth2Provider}
+import com.mohiva.play.silhouette.impl.providers.oauth1.{TwitterProvider}
+import com.mohiva.play.silhouette.impl.providers.oauth2.{LinkedInProvider, FacebookProvider}
 
 import models.Member
 import modules.InteractiveEnv
+import services.ExtendedGitHubProvider
 
 class ProfileBuilderController @Inject()
     (cc: ControllerComponents, silhouette : Silhouette[InteractiveEnv], socialProviderRegistry: SocialProviderRegistry, ws : WSClient, config : Configuration)
@@ -42,9 +45,10 @@ class ProfileBuilderController @Inject()
           case Left(result) => Future.successful(result)
           case Right(authInfo) => for {
             profile <- p.retrieveProfile(authInfo)
-            result <- collectGitHubProfile(authInfo, profile)
+            result <- collectProfile(p.id, authInfo, profile)
           } yield {
-            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry))
+            Ok(result)
+            //Ok(views.html.profileBuilder(request.identity, socialProviderRegistry))
           }
         }
       case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
@@ -52,6 +56,30 @@ class ProfileBuilderController @Inject()
       case e: ProviderException =>
         logger.error("Unexpected provider error", e)
         Redirect(routes.SignInController.view()).flashing("error" -> Messages("could.not.authenticate"))
+    }
+  }
+
+  def collectProfile(provider : String, authInfo : OAuth2Info, profile : CommonSocialProfile) : Future[JsValue] = {
+    logger.info(s"Collecting profile for provider ${provider}, authInfo = ${authInfo} | profile: ${profile}")
+
+    if (provider == ExtendedGitHubProvider.ID) {
+      collectGitHubProfile(authInfo, profile)
+    } else {
+      Future.successful(Json.obj(
+          "provider" -> JsString(provider),
+          "authInfo" -> Json.obj(
+              "accessToken" -> authInfo.accessToken,
+              "tokenType" -> authInfo.tokenType),
+          "profile" -> Json.obj(
+              "loginInfo" -> Json.obj(
+                  "providerId" -> profile.loginInfo.providerID,
+                  "providerKey" -> profile.loginInfo.providerKey),
+              "fuillNname" -> profile.fullName,
+              "firstName" -> profile.firstName,
+              "lastName" -> profile.lastName,
+              "avatarUrl" -> profile.avatarURL,
+              "email" -> profile.email)
+      ))
     }
   }
 
@@ -117,18 +145,16 @@ query {
     jsonQuery.toString
   }
 
-  def collectGitHubProfile(authInfo : OAuth2Info, profile : CommonSocialProfile) : Future[String] = {
-    logger.debug(s"Collecting GitHub Profile from authInfo: ${authInfo} and social profile ${profile}")
-
+  def collectGitHubProfile(authInfo : OAuth2Info, profile : CommonSocialProfile) : Future[JsValue] = {
     val request =
       ws.url(config.get[String]("github.api.endpoint")).addHttpHeaders("Authorization" -> s"bearer ${authInfo.accessToken}")
 
     val query = buildGitHubQuery(profile.loginInfo.providerKey)
 
     logger.info("Sending GitHub request: " + query)
-    request.post(query).flatMap { response =>
+    request.post(query).map { response =>
       logger.info(response.body)
-      Future.failed(new UnsupportedOperationException())
+      response.json
     }
   }
 }
