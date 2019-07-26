@@ -20,7 +20,7 @@ import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, DefaultSoc
 import com.mohiva.play.silhouette.impl.providers.oauth1.TwitterProvider
 import com.mohiva.play.silhouette.impl.providers.oauth1.secrets.{CookieSecretProvider, CookieSecretSettings}
 import com.mohiva.play.silhouette.impl.providers.oauth1.services.PlayOAuth1Service
-import com.mohiva.play.silhouette.impl.providers.oauth2.{GitHubProvider, LinkedInProvider, FacebookProvider}
+import com.mohiva.play.silhouette.impl.providers.oauth2.{GitHubProvider, LinkedInProvider, FacebookProvider, GoogleProvider}
 import com.mohiva.play.silhouette.impl.providers.state.{ CsrfStateItemHandler, CsrfStateSettings }
 import com.mohiva.play.silhouette.impl.util.{PlayCacheLayer, DefaultFingerprintGenerator, SecureRandomIDGenerator}
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
@@ -245,6 +245,15 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     new FacebookProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.facebook"))
   }
 
+  @Provides
+  def provideGoogleProvider(
+    httpLayer: HTTPLayer,
+    socialStateHandler: SocialStateHandler,
+    configuration: Configuration): GoogleProvider = {
+
+    new GoogleProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.google"))
+  }
+
   /**
    * Provides the Twitter provider.
    *
@@ -302,13 +311,15 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     linkedInProvider : SolidLinkedInProvider,
     gitHubProvider : SolidGitHubProvider,
     twitterProvider: TwitterProvider,
-    facebookProvider : FacebookProvider): SocialProviderRegistry = {
+    facebookProvider : FacebookProvider,
+    googleProvider: GoogleProvider): SocialProviderRegistry = {
 
     SocialProviderRegistry(Seq(
       linkedInProvider,
       gitHubProvider,
       twitterProvider,
-      facebookProvider
+      facebookProvider,
+      googleProvider
     ))
   }
 
