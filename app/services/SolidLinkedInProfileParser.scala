@@ -11,7 +11,7 @@ import play.api.libs.json.JsValue
 
 class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, CommonSocialProfile, OAuth2Info] with Logging {
   override def parse(json : JsValue, authInfo: OAuth2Info) = Future.successful {
-    logger.info(s"JSON: ${json} | authInfo: ${authInfo}")
+    logger.info(s"JSON: ${json}")
 
     val userID = (json \ "id").as[String]
     val firstName = (json \ "localizedFirstName").asOpt[String]
