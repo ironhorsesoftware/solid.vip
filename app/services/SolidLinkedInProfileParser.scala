@@ -11,6 +11,8 @@ import play.api.libs.json.{JsValue, JsArray, JsNumber}
 
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 
+import models.Profile
+
 class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, CommonSocialProfile, OAuth2Info] with Logging {
   override def parse(json : JsValue, authInfo: OAuth2Info) = Future.successful {
     logger.info(s"JSON: ${json}")
@@ -34,7 +36,7 @@ class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, CommonSoci
       email = email)    
   }
 
-  def parseRdfModel(json : JsValue, authInfo : OAuth2Info) : Model = {
+  def parseProfile(json : JsValue, authInfo : OAuth2Info) : Profile = {
     val model = ModelFactory.createDefaultModel()
 
     val userID = (json \ "id").as[String]
@@ -43,7 +45,20 @@ class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, CommonSoci
 
     val avatarUrlOpt = findAvatarUrl(json) 
 
-    model
+    Profile(
+        name = firstName + " " + lastName,
+        picture = avatarUrlOpt,
+        title = None,
+        summary = None,
+        location = None,
+        email = None,
+        website = None,
+        twitterUrl = None,
+        gitHubUrl = None,
+        gitHubUsername = None,
+        projects = List(),
+        workExperience = List()
+    )
   }
 
   def findAvatarUrl(json : JsValue) : Option[String] = {
