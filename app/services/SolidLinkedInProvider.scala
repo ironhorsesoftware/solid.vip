@@ -4,17 +4,21 @@ import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.api.util.HTTPLayer
 import com.mohiva.play.silhouette.impl.exceptions.ProfileRetrievalException
-import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, CommonSocialProfile, CommonSocialProfileBuilder }
+import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, CommonSocialProfile}
 import com.mohiva.play.silhouette.impl.providers.{OAuth2Settings, OAuth2Info}
 import com.mohiva.play.silhouette.impl.providers.oauth2.{BaseLinkedInProvider, LinkedInProvider}
 import com.mohiva.play.silhouette.impl.providers.oauth2.LinkedInProvider.SpecifiedProfileError
 
+import org.apache.jena.rdf.model.Model
+
 class SolidLinkedInProvider(
     protected val httpLayer : HTTPLayer,
     protected val stateHandler : SocialStateHandler,
-    val settings : OAuth2Settings) extends BaseLinkedInProvider with CommonSocialProfileBuilder  {
+    val settings : OAuth2Settings) extends BaseLinkedInProvider  {
 
   override type Self = SolidLinkedInProvider
+
+  override type Profile = CommonSocialProfile
 
   override val profileParser = new SolidLinkedInProfileParser
 
