@@ -46,5 +46,5 @@ class SolidLinkedInProvider(
 object SolidLinkedInProvider {
   val ID = LinkedInProvider.ID
 
-  val API = "https://api.linkedin.com/v2/me"
+  val API = "https://api.linkedin.com/v2/me?projection=(id,localizedFirstName,localizedLastName,localizedHeadline,vanityName,profilePicture(displayImage~playableStreams))"
 }

@@ -47,8 +47,8 @@ class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, CommonSoci
   }
 
   def findAvatarUrl(json : JsValue) : Option[String] = {
-    (json \ "profilePicture" \ "elements").as[JsArray].value.find { element =>
-      (element \ "data" \ "displaySize" \ "width").as[JsNumber].value == 200 
+    (json \ "profilePicture" \ "displayImage~" \ "elements").as[JsArray].value.find { element =>
+      (element \ "data" \ "com.linkedin.digitalmedia.mediaartifact.StillImage" \ "displaySize" \ "width").as[JsNumber].value >= 180 
     }.flatMap{ element =>
       (element \ "identifiers").as[JsArray].value.find(identifier => (identifier \ "index").as[JsNumber].value == 0) 
     }.map { identifier =>
