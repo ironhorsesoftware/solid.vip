@@ -1,0 +1,14 @@
+@* about Template File *@
+@(intro : Option[String])(implicit header: RequestHeader, messages : Messages)
+
+@intro.map { text =>
+                <section class="about section">
+                    <div class="section-inner">
+                        <h2 class="heading">About Me</h2>
+                        <div class="content">
+                            <p>@text</p>
+                         
+                        </div><!--//content-->
+                    </div><!--//section-inner-->                 
+                </section><!--//section-->
+}

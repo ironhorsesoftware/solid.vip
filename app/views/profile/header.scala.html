@@ -1,0 +1,25 @@
+@* header Template File *@
+@(name : String, headline : Option[String], profileImage : Option[String], twitterUrl : Option[String], gitHubUrl : Option[String])(implicit header: RequestHeader, messages : Messages)
+
+    <!-- ******HEADER****** --> 
+    <header class="header">
+        <div class="container clearfix">
+@profileImage.map { src =>
+            <img class="profile-image img-fluid float-left" src="@src" alt="@name" />
+}
+            <div class="profile-content float-left">
+                <h1 class="name">@name</h1>
+@headline.map { title =>
+                <h2 class="desc">@title</h2>
+}
+                <ul class="social list-inline">
+@twitterUrl.map { url =>
+                    <li class="list-inline-item"><a href="@url"><i class="fab fa-twitter"></i></a></li>
+}
+@gitHubUrl.map { url =>
+                    <li class="list-inline-item"><a href="@url"><i class="fab fa-github-alt"></i></a></li>
+}
+                </ul> 
+            </div><!--//profile-->
+        </div><!--//container-->
+    </header><!--//header-->
