@@ -9,8 +9,6 @@ import com.mohiva.play.silhouette.impl.providers.{OAuth2Settings, OAuth2Info}
 import com.mohiva.play.silhouette.impl.providers.oauth2.{BaseLinkedInProvider, LinkedInProvider}
 import com.mohiva.play.silhouette.impl.providers.oauth2.LinkedInProvider.SpecifiedProfileError
 
-import org.apache.jena.rdf.model.Model
-
 class SolidLinkedInProvider(
     protected val httpLayer : HTTPLayer,
     protected val stateHandler : SocialStateHandler,

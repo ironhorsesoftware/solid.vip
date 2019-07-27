@@ -1,8 +1,15 @@
 package services
 
+import scala.concurrent.Future
+
+import play.api.libs.json.Json
+
 import com.mohiva.play.silhouette.api.util.HTTPLayer
-import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, OAuth2Settings, CommonSocialProfile, CommonSocialProfileBuilder }
+import com.mohiva.play.silhouette.impl.exceptions.ProfileRetrievalException
+import com.mohiva.play.silhouette.impl.providers.{SocialStateHandler, CommonSocialProfile, CommonSocialProfileBuilder }
+import com.mohiva.play.silhouette.impl.providers.{OAuth2Settings, OAuth2Info}
 import com.mohiva.play.silhouette.impl.providers.oauth2.{BaseGitHubProvider, GitHubProvider}
+import com.mohiva.play.silhouette.impl.providers.oauth2.GitHubProvider.SpecifiedProfileError
 
 
 class SolidGitHubProvider (
@@ -19,6 +26,23 @@ class SolidGitHubProvider (
   override def withSettings(f : (Settings) => Settings) = {
     new SolidGitHubProvider(httpLayer, stateHandler, f(settings))
   }
+
+  override protected def buildProfile(authInfo : OAuth2Info) : Future[Profile] = {
+    super.buildProfile(authInfo)
+  }
+
+  private def buildProfileV2(authInfo : OAuth2Info) : Future[Profile] = {
+    httpLayer.url(urls("api")).withHttpHeaders(("Authorization", s"Bearer ${authInfo.accessToken}")).post[String](SolidGitHubProvider.BODY).flatMap { response =>
+      val json = response.json
+      (json \ "message").asOpt[String] match {
+        case Some(msg) =>
+          val docURL = (json \ "documentation_url").asOpt[String]
+
+          throw new ProfileRetrievalException(SpecifiedProfileError.format(id, msg, docURL))
+        case _ => profileParser.parse(json, authInfo) // TODO: Output models.Profile instead.
+      }
+    }
+  }
 }
 
 object SolidGitHubProvider {
@@ -31,6 +55,67 @@ object SolidGitHubProvider {
    * The GitHub constants.
    */
   val ID = GitHubProvider.ID
-  val API = GitHubProvider.API
+  val API = "https://api.github.com/graphql"
 
+  def BODY = {
+    val query =
+"""
+query {
+  viewer {
+    name
+    avatarUrl
+    bio
+    bioHTML
+    company
+    login
+    location
+    url
+    websiteUrl
+    organizations(first: 10) {
+      nodes {
+        name
+        url
+        login
+      }
+      totalCount
+    }
+    projects(first: 10) {
+      nodes {
+        name
+        url
+      }
+    }
+    repositories(first: 10, privacy:PUBLIC) {
+      nodes {
+        name
+        owner {
+          login
+          url
+        }
+        url
+        isFork
+      }
+      totalCount
+    }
+    repositoriesContributedTo(first: 10, privacy:PUBLIC) {
+      nodes {
+        name
+        owner {
+          login
+          id
+        }
+        isFork
+      }
+      totalCount
+    }
+  }
+}
+  """    
+
+    val jsonQuery = Json.obj(
+        "query" -> query
+    )
+
+    jsonQuery.toString
+  }
 }
