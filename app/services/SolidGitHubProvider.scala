@@ -69,6 +69,7 @@ query {
     company
     login
     location
+    email
     url
     websiteUrl
     organizations(first: 10) {

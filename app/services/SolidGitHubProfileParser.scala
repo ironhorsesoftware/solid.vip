@@ -22,4 +22,26 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, CommonSocial
       profile.copy(loginInfo = LoginInfo(SolidGitHubProvider.ID, (json \ "login").as[String]))
     }
   }
+
+  def parseV2(json: JsValue, authInfo: OAuth2Info) : models.Profile = {
+    logger.debug(s"json: ${json} | authInfo: ${authInfo}")
+
+    val summary = (json \ "bio").asOpt[String]
+    val summaryHtml = (json \ "bioHTML").asOpt[String]
+
+    models.Profile(
+        name = (json \ "name").as[String],
+        picture = (json \ "avatarUrl").asOpt[String],
+        title = (json \ "company").asOpt[String],
+        summary = None, // TODO
+        location = (json \ "location").asOpt[String],
+        email = (json \ "email").asOpt[String],
+        website = (json \ "websiteUrl").asOpt[String],
+        twitterUrl = None,
+        gitHubUrl = (json \ "url").asOpt[String],
+        gitHubUsername = (json \ "login").asOpt[String],
+        projects = List(), // TODO
+        workExperience = List()
+    )
+  }
 }
