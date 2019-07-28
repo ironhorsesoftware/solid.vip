@@ -16,8 +16,6 @@ class SolidLinkedInProvider(
 
   override type Self = SolidLinkedInProvider
 
-  //override type Profile = CommonSocialProfile
-
   override val profileParser = new SolidLinkedInProfileParser
 
   override protected def buildProfile(authInfo: OAuth2Info): Future[Profile] = {

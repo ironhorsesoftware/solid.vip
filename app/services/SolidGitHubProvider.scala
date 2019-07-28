@@ -19,8 +19,6 @@ class SolidGitHubProvider (
 
   override type Self = SolidGitHubProvider
 
-  //override type Profile = CommonSocialProfile
-
   override val profileParser = new SolidGitHubProfileParser
 
   override def withSettings(f : (Settings) => Settings) = {
@@ -32,6 +30,9 @@ class SolidGitHubProvider (
   }
 
   private def buildProfileV2(authInfo : OAuth2Info) : Future[Profile] = {
+    val apiUrl = urls("api")
+
+    logger.info(s"Connecting to $apiUrl with access token ${authInfo.accessToken}")
     httpLayer.url(urls("api")).withHttpHeaders(("Authorization", s"Bearer ${authInfo.accessToken}")).post[String](SolidGitHubProvider.BODY).flatMap { response =>
       val json = response.json
       (json \ "message").asOpt[String] match {

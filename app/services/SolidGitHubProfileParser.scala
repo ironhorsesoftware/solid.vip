@@ -27,7 +27,7 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAu
   }
 
   def parse(json: JsValue, authInfo: OAuth2Info) : Future[models.Profile] = Future.successful {
-    logger.debug(s"json: ${json} | authInfo: ${authInfo}")
+    logger.info(s"json: ${json} | authInfo: ${authInfo}")
 
     val login = (json \ "login").as[String]
 
