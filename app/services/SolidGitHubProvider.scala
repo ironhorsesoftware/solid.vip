@@ -2,7 +2,7 @@ package services
 
 import scala.concurrent.Future
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, JsValue}
 
 import com.mohiva.play.silhouette.api.util.HTTPLayer
 import com.mohiva.play.silhouette.impl.exceptions.ProfileRetrievalException
@@ -30,10 +30,9 @@ class SolidGitHubProvider (
   }
 
   private def buildProfileV2(authInfo : OAuth2Info) : Future[Profile] = {
-    val apiUrl = urls("api")
+    val apiUrl = settings.apiURL.getOrElse(SolidGitHubProvider.API)
 
-    logger.info(s"Connecting to $apiUrl with access token ${authInfo.accessToken}")
-    httpLayer.url(urls(apiUrl)).withHttpHeaders(("Authorization", s"bearer ${authInfo.accessToken}")).post[String](SolidGitHubProvider.BODY).flatMap { response =>
+    httpLayer.url(apiUrl).withHttpHeaders(("Authorization", s"bearer ${authInfo.accessToken}")).post[JsValue](SolidGitHubProvider.BODY).flatMap { response =>
       val json = response.json
       (json \ "message").asOpt[String] match {
         case Some(msg) =>
@@ -114,10 +113,8 @@ query {
 }
   """    
 
-    val jsonQuery = Json.obj(
+    Json.obj(
         "query" -> query
     )
-
-    jsonQuery.toString
   }
 }
