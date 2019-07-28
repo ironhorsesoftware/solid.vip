@@ -33,7 +33,7 @@ class SolidGitHubProvider (
     val apiUrl = urls("api")
 
     logger.info(s"Connecting to $apiUrl with access token ${authInfo.accessToken}")
-    httpLayer.url(urls("api")).withHttpHeaders(("Authorization", s"Bearer ${authInfo.accessToken}")).post[String](SolidGitHubProvider.BODY).flatMap { response =>
+    httpLayer.url(urls("api")).withHttpHeaders(("Authorization", s"bearer ${authInfo.accessToken}")).post[String](SolidGitHubProvider.BODY).flatMap { response =>
       val json = response.json
       (json \ "message").asOpt[String] match {
         case Some(msg) =>
