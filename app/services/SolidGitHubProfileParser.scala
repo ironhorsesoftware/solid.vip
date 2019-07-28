@@ -29,22 +29,24 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAu
   def parse(json: JsValue, authInfo: OAuth2Info) : Future[models.Profile] = Future.successful {
     logger.info(s"json: ${json} | authInfo: ${authInfo}")
 
-    val login = (json \ "login").as[String]
+    val root = (json \ "data" \ "viewer")
 
-    val summary = (json \ "bio").asOpt[String]
-    val summaryHtml = (json \ "bioHTML").asOpt[String]
+    val login = (root \ "login").as[String]
+
+    val summary = (root \ "bio").asOpt[String]
+    val summaryHtml = (root \ "bioHTML").asOpt[String]
 
     models.Profile(
         loginInfo = LoginInfo(SolidGitHubProvider.ID, login),
-        name = (json \ "name").as[String],
-        picture = (json \ "avatarUrl").asOpt[String],
-        title = (json \ "company").asOpt[String],
+        name = (root \ "name").as[String],
+        picture = (root \ "avatarUrl").asOpt[String],
+        title = (root \ "company").asOpt[String],
         summary = None, // TODO
-        location = (json \ "location").asOpt[String],
-        email = (json \ "email").asOpt[String],
-        website = (json \ "websiteUrl").asOpt[String],
+        location = (root \ "location").asOpt[String],
+        email = (root \ "email").asOpt[String],
+        website = (root \ "websiteUrl").asOpt[String],
         twitterUrl = None,
-        gitHubUrl = (json \ "url").asOpt[String],
+        gitHubUrl = (root \ "url").asOpt[String],
         Some(login),
         projects = List(), // TODO
         workExperience = List()
