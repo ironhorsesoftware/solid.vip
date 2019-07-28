@@ -41,7 +41,7 @@ import daos.{MemberDAO, CredentialsDAO, AuthTokenDAO, AuthTokenDAOImpl}
 import daos.slick.{SlickMemberDAO, SlickCredentialsDAO}
 import models.Member
 import services.{AuthTokenService, AuthTokenServiceImpl, MemberService, MemberServiceImpl}
-import services.{SolidGitHubProvider, SolidLinkedInProvider}
+import services.{SolidGitHubProvider, SolidLinkedInProvider, SolidTwitterProvider, SolidGoogleProvider, SolidFacebookProvider}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -240,18 +240,18 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
   def provideFacebookProvider(
     httpLayer: HTTPLayer,
     socialStateHandler: SocialStateHandler,
-    configuration: Configuration): FacebookProvider = {
+    configuration: Configuration): SolidFacebookProvider = {
 
-    new FacebookProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.facebook"))
+    new SolidFacebookProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.facebook"))
   }
 
   @Provides
   def provideGoogleProvider(
     httpLayer: HTTPLayer,
     socialStateHandler: SocialStateHandler,
-    configuration: Configuration): GoogleProvider = {
+    configuration: Configuration): SolidGoogleProvider = {
 
-    new GoogleProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.google"))
+    new SolidGoogleProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.google"))
   }
 
   /**
@@ -266,10 +266,10 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
   def provideTwitterProvider(
     httpLayer: HTTPLayer,
     tokenSecretProvider: OAuth1TokenSecretProvider,
-    configuration: Configuration): TwitterProvider = {
+    configuration: Configuration): SolidTwitterProvider = {
 
     val settings = configuration.underlying.as[OAuth1Settings]("silhouette.twitter")
-    new TwitterProvider(httpLayer, new PlayOAuth1Service(settings), tokenSecretProvider, settings)
+    new SolidTwitterProvider(httpLayer, new PlayOAuth1Service(settings), tokenSecretProvider, settings)
   }
 
   /**
@@ -310,9 +310,9 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
   def provideSocialProviderRegistry(
     linkedInProvider : SolidLinkedInProvider,
     gitHubProvider : SolidGitHubProvider,
-    twitterProvider: TwitterProvider,
-    facebookProvider : FacebookProvider,
-    googleProvider: GoogleProvider): SocialProviderRegistry = {
+    twitterProvider: SolidTwitterProvider,
+    facebookProvider : SolidFacebookProvider,
+    googleProvider: SolidGoogleProvider): SocialProviderRegistry = {
 
     SocialProviderRegistry(Seq(
       linkedInProvider,

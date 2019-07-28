@@ -11,7 +11,7 @@ import play.api.libs.json._
 import play.api.libs.ws._
 import play.api.mvc.{ControllerComponents, AbstractController, AnyContent, Request}
 
-import com.mohiva.play.silhouette.api.{Silhouette, AuthInfo}
+import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, AuthInfo}
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.impl.providers.{SocialProvider, SocialProviderRegistry, CommonSocialProfileBuilder, CommonSocialProfile}
@@ -21,7 +21,7 @@ import com.mohiva.play.silhouette.impl.providers.oauth2.{LinkedInProvider, Faceb
 
 import models.Member
 import modules.InteractiveEnv
-import services.SolidGitHubProvider
+import services.{SolidProfileBuilder, SolidGitHubProvider}
 
 class ProfileBuilderController @Inject()
     (cc: ControllerComponents, silhouette : Silhouette[InteractiveEnv], socialProviderRegistry: SocialProviderRegistry, ws : WSClient, config : Configuration)
@@ -40,7 +40,7 @@ class ProfileBuilderController @Inject()
    */
   def authenticate(provider: String) = silhouette.SecuredAction.async { implicit request: SecuredRequest[InteractiveEnv, AnyContent] =>
     (socialProviderRegistry.get[SocialProvider](provider) match {
-      case Some(p: SocialProvider with CommonSocialProfileBuilder) =>
+      case Some(p: SocialProvider with SolidProfileBuilder) =>
         p.authenticate().flatMap {
           case Left(result) => Future.successful(result)
           case Right(authInfo) => for {
@@ -59,26 +59,15 @@ class ProfileBuilderController @Inject()
     }
   }
 
-  def collectProfile(provider : String, authInfo : AuthInfo, profile : CommonSocialProfile) : Future[JsValue] = {
+  def collectProfile(provider : String, authInfo : AuthInfo, profile : models.Profile) : Future[JsValue] = {
+    implicit val loginInfoReads = Json.writes[LoginInfo]
+    implicit val projectReads = Json.writes[models.Project]
+    implicit val workExperienceReads = Json.writes[models.WorkExperience]
+    implicit val profileReads = Json.writes[models.Profile]
+
     logger.info(s"Collecting profile for provider ${provider}, authInfo = ${authInfo} | profile: ${profile}")
 
-    if (provider == SolidGitHubProvider.ID) {
-      collectGitHubProfile(authInfo.asInstanceOf[OAuth2Info], profile)
-    } else {
-      Future.successful(Json.obj(
-          "provider" -> JsString(provider),
-          "authInfo" -> JsString(authInfo.toString),
-          "profile" -> Json.obj(
-              "loginInfo" -> Json.obj(
-                  "providerId" -> profile.loginInfo.providerID,
-                  "providerKey" -> profile.loginInfo.providerKey),
-              "fuillNname" -> profile.fullName,
-              "firstName" -> profile.firstName,
-              "lastName" -> profile.lastName,
-              "avatarUrl" -> profile.avatarURL,
-              "email" -> profile.email)
-      ))
-    }
+    Future.successful(Json.toJson(profile))
   }
 
   def buildGitHubQuery(login : String) : String = {

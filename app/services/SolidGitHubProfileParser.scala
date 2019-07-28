@@ -1,5 +1,6 @@
 package services
 
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.Logging
@@ -12,18 +13,20 @@ import com.mohiva.play.silhouette.impl.providers.{CommonSocialProfileBuilder, Co
 import com.mohiva.play.silhouette.impl.providers.SocialProfileParser
 import com.mohiva.play.silhouette.impl.providers.oauth2.GitHubProfileParser
 
-class SolidGitHubProfileParser extends SocialProfileParser[JsValue, CommonSocialProfile, OAuth2Info] with Logging {
+import models.Profile
+
+class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAuth2Info] with Logging {
 
   val commonParser = new GitHubProfileParser
 
-  def parse(json: JsValue, authInfo: OAuth2Info) = {
+  def parseV1(json: JsValue, authInfo: OAuth2Info) = {
     logger.debug(s"json: ${json} | authInfo: ${authInfo}")
     commonParser.parse(json, authInfo).map { profile =>
       profile.copy(loginInfo = LoginInfo(SolidGitHubProvider.ID, (json \ "login").as[String]))
     }
   }
 
-  def parseV2(json: JsValue, authInfo: OAuth2Info) : models.Profile = {
+  def parse(json: JsValue, authInfo: OAuth2Info) : Future[models.Profile] = Future.successful {
     logger.debug(s"json: ${json} | authInfo: ${authInfo}")
 
     val login = (json \ "login").as[String]

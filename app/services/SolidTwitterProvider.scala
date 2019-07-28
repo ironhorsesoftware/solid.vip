@@ -14,7 +14,6 @@ import models.Profile
 class SolidTwitterProvider(
     protected val httpLayer : HTTPLayer,
     val service: OAuth1Service,
-    protected val stateHandler : SocialStateHandler,
     protected val tokenSecretProvider: OAuth1TokenSecretProvider,
     val settings : OAuth1Settings) extends BaseTwitterProvider with SolidProfileBuilder {
 
@@ -22,7 +21,7 @@ class SolidTwitterProvider(
   override val profileParser = new SolidTwitterProfileParser
 
   override def withSettings(f : (Settings) => Settings) = {
-    new SolidTwitterProvider(httpLayer, service.withSettings(f), stateHandler, tokenSecretProvider, f(settings))
+    new SolidTwitterProvider(httpLayer, service.withSettings(f), tokenSecretProvider, f(settings))
   }
 }
 

@@ -10,10 +10,10 @@ import play.api.libs.json.{JsValue, JsArray, JsNumber}
 
 import models.Profile
 
-class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, CommonSocialProfile, OAuth2Info] with Logging {
+class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, Profile, OAuth2Info] with Logging {
   override def parse(json : JsValue, authInfo: OAuth2Info) = Future.successful {
     logger.info(s"JSON: ${json}")
-    parseCommonSocialProfile(json, authInfo)
+    parseProfile(json, authInfo)
   }
 
   def parseCommonSocialProfile(json : JsValue, authInfo : OAuth2Info) : CommonSocialProfile = {

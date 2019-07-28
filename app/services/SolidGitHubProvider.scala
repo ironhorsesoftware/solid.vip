@@ -15,7 +15,7 @@ import com.mohiva.play.silhouette.impl.providers.oauth2.GitHubProvider.Specified
 class SolidGitHubProvider (
     protected val httpLayer : HTTPLayer,
     protected val stateHandler : SocialStateHandler,
-    val settings : OAuth2Settings) extends BaseGitHubProvider with CommonSocialProfileBuilder {
+    val settings : OAuth2Settings) extends BaseGitHubProvider with SolidProfileBuilder {
 
   override type Self = SolidGitHubProvider
 
@@ -28,7 +28,7 @@ class SolidGitHubProvider (
   }
 
   override protected def buildProfile(authInfo : OAuth2Info) : Future[Profile] = {
-    super.buildProfile(authInfo)
+    buildProfileV2(authInfo)
   }
 
   private def buildProfileV2(authInfo : OAuth2Info) : Future[Profile] = {
@@ -39,7 +39,7 @@ class SolidGitHubProvider (
           val docURL = (json \ "documentation_url").asOpt[String]
 
           throw new ProfileRetrievalException(SpecifiedProfileError.format(id, msg, docURL))
-        case _ => profileParser.parse(json, authInfo) // TODO: Output models.Profile instead.
+        case _ => profileParser.parse(json, authInfo)
       }
     }
   }

@@ -12,7 +12,7 @@ import com.mohiva.play.silhouette.impl.providers.oauth2.LinkedInProvider.Specifi
 class SolidLinkedInProvider(
     protected val httpLayer : HTTPLayer,
     protected val stateHandler : SocialStateHandler,
-    val settings : OAuth2Settings) extends BaseLinkedInProvider with CommonSocialProfileBuilder  {
+    val settings : OAuth2Settings) extends BaseLinkedInProvider with SolidProfileBuilder  {
 
   override type Self = SolidLinkedInProvider
 
