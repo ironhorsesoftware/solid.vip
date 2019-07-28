@@ -25,6 +25,7 @@ class SolidGoogleProvider(
 
 object SolidGoogleProvider {
   val ID = GoogleProvider.ID
+  val SpecifiedProfileError = GoogleProvider.SpecifiedProfileError
 
   val API = "https://people.googleapis.com/v1/people/me"
 }

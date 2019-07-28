@@ -25,3 +25,9 @@ class SolidTwitterProvider(
     new SolidTwitterProvider(httpLayer, service.withSettings(f), stateHandler, tokenSecretProvider, f(settings))
   }
 }
+
+object SolidTwitterProvider {
+  val ID = TwitterProvider.ID
+  val API = TwitterProvider.API
+  val SpecifiedProfileError = TwitterProvider.SpecifiedProfileError
+}
