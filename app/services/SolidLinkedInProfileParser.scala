@@ -4,12 +4,9 @@ import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.providers.{SocialProfileParser, CommonSocialProfile, OAuth2Info}
-import com.mohiva.play.silhouette.impl.providers.oauth2.LinkedInProvider.ID
 
 import play.api.Logging
 import play.api.libs.json.{JsValue, JsArray, JsNumber}
-
-import org.apache.jena.rdf.model.{Model, ModelFactory}
 
 import models.Profile
 
@@ -28,7 +25,7 @@ class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, CommonSoci
     val email = (json \ "emailAddress").asOpt[String]
 
     CommonSocialProfile(
-      loginInfo = LoginInfo(ID, userID),
+      loginInfo = LoginInfo(SolidLinkedInProvider.ID, userID),
       firstName = firstName,
       lastName = lastName,
       fullName = fullName,
@@ -37,8 +34,6 @@ class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, CommonSoci
   }
 
   def parseProfile(json : JsValue, authInfo : OAuth2Info) : Profile = {
-    val model = ModelFactory.createDefaultModel()
-
     val userID = (json \ "id").as[String]
     val firstName = (json \ "localizedFirstName").asOpt[String]
     val lastName = (json \ "localizedLastName").asOpt[String]
@@ -46,6 +41,7 @@ class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, CommonSoci
     val avatarUrlOpt = findAvatarUrl(json) 
 
     Profile(
+        loginInfo = LoginInfo(SolidLinkedInProvider.ID, userID),
         name = firstName + " " + lastName,
         picture = avatarUrlOpt,
         title = None,

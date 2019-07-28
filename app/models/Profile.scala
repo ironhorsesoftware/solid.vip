@@ -1,6 +1,10 @@
 package models
 
+import com.mohiva.play.silhouette.api.LoginInfo
+import com.mohiva.play.silhouette.impl.providers.SocialProfile
+
 case class Profile (
+    loginInfo : LoginInfo,
     name : String,
     picture : Option[String],
     title : Option[String],
@@ -12,4 +16,4 @@ case class Profile (
     gitHubUrl : Option[String],
     gitHubUsername : Option[String],
     projects : List[Project],
-    workExperience : List[WorkExperience])
+    workExperience : List[WorkExperience]) extends SocialProfile
