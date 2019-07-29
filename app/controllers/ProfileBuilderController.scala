@@ -72,4 +72,12 @@ class ProfileBuilderController @Inject()
 
     Future.successful(Json.toJson(profile))
   }
+
+  def save = silhouette.SecuredAction.async { implicit request : SecuredRequest[InteractiveEnv, AnyContent] =>
+    profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
+      profileOpt.getOrElse(Profile(request.identity))
+    }.map { profile =>
+      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, None))
+    }
+  }
 }

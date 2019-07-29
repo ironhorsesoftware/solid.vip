@@ -4,11 +4,12 @@
 
 @(member : models.Member, socialProviders: SocialProviderRegistry, profile : Profile, socialProfileOpt : Option[Profile])(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
 
+@implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-12", "col-md-12") }
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        @* Here's where we render the page title `String`. *@
         <title>Profile Builder</title>
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -26,6 +27,7 @@
         @navbar(Some(member))
 
         <main class="container">
+			<h1>Build Your Profile</h1>
             <fieldset class="col-md-6 offset-md-3">
 
 @if(socialProviders.providers.nonEmpty) {
@@ -41,15 +43,48 @@
 
             </fieldset>
 
-			<h1>Profile</h1>
-
+@helper.form(action = controllers.routes.ProfileBuilderController.save) {
+			<h2>Select Name</h2>
+			<h3>Your name can be retrieved from any of the above services.</h3>			
 			<ul>
 				<li>@profile.name</li>
-@if(socialProfileOpt.isDefined) {
+  @if(socialProfileOpt.isDefined) {
 				<li>@socialProfileOpt.get.name</li>
-}
+  }
 			</ul>
+            <h2>Select Photo</h2>
+            <h3>Your photo can be retrieved from any of the above services.</h3>
 
+			<h2>Select Title</h2>
+            <h3>Your title can be retrieved from either GitHub or Google.</h3>
+
+			<h2>Select Summary</h2>
+			<h3>A summary can be retrieved from either GitHub or Twitter.</h3>
+
+			<h2>Select Location</h2>
+			<h3>Your location can be retrieved from either GitHub or Twitter.</h3>
+
+			<h2>Select Email</h2>
+			<h3>Your e-mail can be retrieved from GitHub, Twitter, Facebook, or Google.</h3>
+
+			<h2>Select Website</h2>
+			<h3>Your website can be retrieved from either GitHub or Twitter. </h3>
+
+			<h2>Select Twitter URL</h2>
+			<h3>Your Twitter URL can be retrieved from Twitter.</h3>
+
+			<h2>Select GitHub URL</h2>
+			<h3>Your GitHub URL can be retrieved from GitHub.</h3>
+
+			<h2>Select GitHub Username</h2>
+			<h3>Your GitHub Username can be retrieved from GitHub.</h3>
+
+			<h2>Select Projects</h2>
+			<h3>Your projects can be retrieved from GitHub.</h3>
+
+			<h2>Select Work Experiences</h2>
+			<h3>Your work history can be retrieved from Google.</h3>
+}
         </main>
 
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

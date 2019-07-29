@@ -9,6 +9,7 @@ POST        /contact                         controllers.HomeController.contact
 
 GET         /authenticate/:provider          controllers.ProfileBuilderController.authenticate(provider)
 GET         /profile/builder                 controllers.ProfileBuilderController.view
+POST        /profile/builder                 controllers.ProfileBuilderController.save
 
 GET         /signUp                          controllers.SignUpController.view
 POST        /signUp                          controllers.SignUpController.submit
