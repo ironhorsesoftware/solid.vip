@@ -11,8 +11,23 @@ import play.api.libs.json.{JsValue, JsArray, JsNumber}
 import models.Profile
 
 class SolidFacebookParser extends SocialProfileParser[JsValue, Profile, OAuth2Info] with Logging {
-  override def parse(json : JsValue, authInfo : OAuth2Info) : Future[Profile] = {
+  override def parse(json : JsValue, authInfo : OAuth2Info) : Future[Profile] = Future.successful {
     logger.info(s"JSON: ${json}")
-    Future.failed(new UnsupportedOperationException)
+
+    Profile(
+        loginInfo = LoginInfo(SolidFacebookProvider.ID, (json \ "id").as[String]),
+        name = (json \ "name").as[String],
+        picture = (json \ "picture" \ "data" \ "url").asOpt[String],
+        title = None,
+        summary = None,
+        location = None,
+        email = (json \ "email").asOpt[String],
+        website = None,
+        twitterUrl = None,
+        gitHubUrl = None,
+        gitHubUsername = None,
+        projects = List(),
+        workExperience = List()
+    )
   }
 }
