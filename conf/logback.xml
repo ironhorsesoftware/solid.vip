@@ -25,6 +25,7 @@
   </appender>
 
   <logger name="play" level="INFO" />
+  <logger name="reactivemongo" level="WARN" />
   <logger name="application" level="DEBUG" />
   <logger name="controllers.ProfileBuilderController" level="INFO" />
   <logger name="services" level="INFO" />

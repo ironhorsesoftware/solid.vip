@@ -17,17 +17,8 @@ import models.{Profile, Project}
 
 class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAuth2Info] with Logging {
 
-  val commonParser = new GitHubProfileParser
-
-  def parseV1(json: JsValue, authInfo: OAuth2Info) = {
-    logger.debug(s"json: ${json} | authInfo: ${authInfo}")
-    commonParser.parse(json, authInfo).map { profile =>
-      profile.copy(loginInfo = LoginInfo(SolidGitHubProvider.ID, (json \ "login").as[String]))
-    }
-  }
-
   def parse(json: JsValue, authInfo: OAuth2Info) : Future[models.Profile] = Future.successful {
-    logger.info(s"json: ${json} | authInfo: ${authInfo}")
+    logger.debug(s"json: ${json} | authInfo: ${authInfo}")
 
     val root = (json \ "data" \ "viewer").as[JsValue]
 

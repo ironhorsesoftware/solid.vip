@@ -25,6 +25,5 @@ class SolidFacebookProvider(
 
 object SolidFacebookProvider {
   val ID = FacebookProvider.ID
-  val API = ""
   val SpecifiedProfileError = FacebookProvider.SpecifiedProfileError
 }

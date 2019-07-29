@@ -15,7 +15,7 @@ import models.Profile
 
 class SolidTwitterProfileParser extends SocialProfileParser[JsValue, Profile, OAuth1Info] with Logging {
   override def parse(json : JsValue, authOinfo: OAuth1Info) : Future[Profile] = Future.successful {
-    logger.info(s"JSON: ${json}")
+    logger.debug(s"JSON: ${json}")
 
     Profile(
         loginInfo = LoginInfo(SolidTwitterProvider.ID, (json \ "id").as[JsNumber].toString),

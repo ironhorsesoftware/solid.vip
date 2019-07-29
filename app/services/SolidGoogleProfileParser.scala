@@ -15,7 +15,7 @@ import models.{Profile, WorkExperience}
 
 class SolidGoogleProfileParser extends SocialProfileParser[JsValue, Profile, OAuth2Info] with Logging {
   override def parse(json : JsValue, authInfo : OAuth2Info) : Future[Profile] = {
-    logger.info(s"JSON: ${json}")
+    logger.debug(s"JSON: ${json}")
 
     val profileTry =
       getId(json).flatMap { id =>

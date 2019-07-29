@@ -12,7 +12,7 @@ import models.Profile
 
 class SolidFacebookParser extends SocialProfileParser[JsValue, Profile, OAuth2Info] with Logging {
   override def parse(json : JsValue, authInfo : OAuth2Info) : Future[Profile] = Future.successful {
-    logger.info(s"JSON: ${json}")
+    logger.debug(s"JSON: ${json}")
 
     Profile(
         loginInfo = LoginInfo(SolidFacebookProvider.ID, (json \ "id").as[String]),
