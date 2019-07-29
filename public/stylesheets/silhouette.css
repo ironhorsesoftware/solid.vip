@@ -23,6 +23,7 @@ input:hover, input:focus {
 
 fieldset {
     margin-top: 100px;
+    margin-bottom: 75px;
 }
 legend {
     font-family: 'Montserrat', sans-serif;

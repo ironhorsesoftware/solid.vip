@@ -27,8 +27,8 @@
         @navbar(Some(member))
 
         <main class="container">
-			<h1>Build Your Profile</h1>
             <fieldset class="col-md-6 offset-md-3">
+				<h1>Build Your Profile</h1>
 
 @if(socialProviders.providers.nonEmpty) {
                 <div class="social-providers">
@@ -44,46 +44,46 @@
             </fieldset>
 
 @helper.form(action = controllers.routes.ProfileBuilderController.save) {
-			<h2>Select Name</h2>
-			<h3>Your name can be retrieved from any of the above services.</h3>			
+			<h4>Select Name</h4>
+			<p><em>Your name can be retrieved from any of the above services.</em></p>			
 			<ul>
 				<li>@profile.name</li>
   @if(socialProfileOpt.isDefined) {
 				<li>@socialProfileOpt.get.name</li>
   }
 			</ul>
-            <h2>Select Photo</h2>
-            <h3>Your photo can be retrieved from any of the above services.</h3>
+            <h4>Select Photo</h4>
+            <p><em>Your photo can be retrieved from any of the above services.</em></p>
 
-			<h2>Select Title</h2>
-            <h3>Your title can be retrieved from either GitHub or Google.</h3>
+			<h4>Select Title</h4>
+            <p><em>Your title can be retrieved from either GitHub or Google.</em></p>
 
-			<h2>Select Summary</h2>
-			<h3>A summary can be retrieved from either GitHub or Twitter.</h3>
+			<h4>Select Summary</h4>
+			<p><em>A summary can be retrieved from either GitHub or Twitter.</em></p>
 
-			<h2>Select Location</h2>
-			<h3>Your location can be retrieved from either GitHub or Twitter.</h3>
+			<h4>Select Location</h4>
+			<p><em>Your location can be retrieved from either GitHub or Twitter.</em></p>
 
-			<h2>Select Email</h2>
-			<h3>Your e-mail can be retrieved from GitHub, Twitter, Facebook, or Google.</h3>
+			<h4>Select Email</h4>
+			<p><em>Your e-mail can be retrieved from GitHub, Twitter, Facebook, or Google.</em></p>
 
-			<h2>Select Website</h2>
-			<h3>Your website can be retrieved from either GitHub or Twitter. </h3>
+			<h4>Select Website</h4>
+			<p><em>Your website can be retrieved from either GitHub or Twitter. </em></p>
 
-			<h2>Select Twitter URL</h2>
-			<h3>Your Twitter URL can be retrieved from Twitter.</h3>
+			<h4>Select Twitter URL</h4>
+			<p><em>Your Twitter URL can be retrieved from Twitter.</em></p>
 
-			<h2>Select GitHub URL</h2>
-			<h3>Your GitHub URL can be retrieved from GitHub.</h3>
+			<h4>Select GitHub URL</h4>
+			<p><em>Your GitHub URL can be retrieved from GitHub.</em></p>
 
-			<h2>Select GitHub Username</h2>
-			<h3>Your GitHub Username can be retrieved from GitHub.</h3>
+			<h4>Select GitHub Username</h4>
+			<p><em>Your GitHub Username can be retrieved from GitHub.</em></p>
 
-			<h2>Select Projects</h2>
-			<h3>Your projects can be retrieved from GitHub.</h3>
+			<h4>Select Projects</h4>
+			<p><em>Your projects can be retrieved from GitHub.</em></p>
 
-			<h2>Select Work Experiences</h2>
-			<h3>Your work history can be retrieved from Google.</h3>
+			<h4>Select Work Experiences</h4>
+			<p><em>Your work history can be retrieved from Google.</em></p>
 }
         </main>
 
