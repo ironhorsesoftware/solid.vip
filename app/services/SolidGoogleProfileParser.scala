@@ -73,18 +73,11 @@ class SolidGoogleProfileParser extends SocialProfileParser[JsValue, Profile, OAu
     (json \ "organizations").as[JsArray].value.filter { organization =>
       (organization \ "type").as[JsString].value == "work"
     }.map { workExperience =>
-      val endDateOpt =
-        if ((workExperience \ "current").as[JsBoolean].value) {
-          None
-        } else {
-          Some((workExperience \ "endDate" \ "year").as[JsNumber].value.toString)
-        }
-
       WorkExperience(
           title = (workExperience \ "title").as[JsString].value.toString,
           company = (workExperience \ "name").as[JsString].value.toString,
           startDate = (workExperience \ "startDate" \ "year").as[JsNumber].value.toString,
-          endDate = endDateOpt,
+          endDate = (workExperience \ "endDate" \ "year").asOpt[JsNumber].map(year => year.toString),
           description = None,
       )
     }.toList
