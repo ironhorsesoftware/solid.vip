@@ -51,7 +51,7 @@ class SolidGoogleProfileParser extends SocialProfileParser[JsValue, Profile, OAu
   }
 
   def isPrimary(item : JsValue) : Boolean = {
-    (item \ "metadata" \ "primary").asInstanceOf[JsBoolean].value
+    (item \ "metadata" \ "primary").as[JsBoolean].value
   }
 
   def getPrimaryItem(json : JsValue, category : String, record: String) : Option[String] = {
@@ -71,19 +71,19 @@ class SolidGoogleProfileParser extends SocialProfileParser[JsValue, Profile, OAu
 
   def getWorkExperience(json : JsValue) : List[WorkExperience] = {
     (json \ "organizations").as[JsArray].value.filter { organization =>
-      (organization \ "type").asInstanceOf[JsString].value == "work"
+      (organization \ "type").as[JsString].value == "work"
     }.map { workExperience =>
       val endDateOpt =
-        if ((workExperience \ "current").asInstanceOf[JsBoolean].value) {
+        if ((workExperience \ "current").as[JsBoolean].value) {
           None
         } else {
-          Some((workExperience \ "endDate" \ "year").asInstanceOf[JsNumber].value.toString)
+          Some((workExperience \ "endDate" \ "year").as[JsNumber].value.toString)
         }
 
       WorkExperience(
-          title = (workExperience \ "title").asInstanceOf[JsString].value.toString,
-          company = (workExperience \ "name").asInstanceOf[JsString].value.toString,
-          startDate = (workExperience \ "startDate" \ "year").asInstanceOf[JsNumber].value.toString,
+          title = (workExperience \ "title").as[JsString].value.toString,
+          company = (workExperience \ "name").as[JsString].value.toString,
+          startDate = (workExperience \ "startDate" \ "year").as[JsNumber].value.toString,
           endDate = endDateOpt,
           description = None,
       )
