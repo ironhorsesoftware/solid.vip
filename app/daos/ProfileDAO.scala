@@ -9,11 +9,11 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import models.Profile
 
 trait ProfileDAO {
-  def create(profile : Profile) : Future[UUID]
+  def create(profile : Profile) : Future[Unit]
 
   def retrieve(loginInfo : LoginInfo) : Future[Option[Profile]]
 
-  def save(profile : Profile) : Future[Profile]
+  def update(profile : Profile) : Future[Unit]
 
-  def delete(id : UUID) : Future[Unit]
+  def delete(loginInfo : LoginInfo) : Future[Unit]
 }

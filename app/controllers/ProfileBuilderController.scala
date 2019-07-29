@@ -4,12 +4,12 @@ import javax.inject._
 
 import scala.concurrent.{Future, ExecutionContext}
 
-import play.api.{Logging, Configuration}
+import play.api.Logging
 import play.api.http.HttpEntity
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json._
-import play.api.libs.ws._
 import play.api.mvc.{ControllerComponents, AbstractController, AnyContent, Request}
+import play.modules.reactivemongo._
 
 import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, AuthInfo}
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
@@ -24,9 +24,9 @@ import modules.InteractiveEnv
 import services.{SolidProfileBuilder, SolidGitHubProvider}
 
 class ProfileBuilderController @Inject()
-    (cc: ControllerComponents, silhouette : Silhouette[InteractiveEnv], socialProviderRegistry: SocialProviderRegistry, ws : WSClient, config : Configuration)
+    (cc: ControllerComponents, silhouette : Silhouette[InteractiveEnv], socialProviderRegistry: SocialProviderRegistry, val reactiveMongoApi: ReactiveMongoApi)
     (implicit assets: AssetsFinder, ex: ExecutionContext)
-    extends AbstractController(cc) with I18nSupport with Logging { 
+    extends AbstractController(cc) with MongoController with ReactiveMongoComponents with I18nSupport with Logging { 
 
   def view = silhouette.SecuredAction { implicit request : SecuredRequest[InteractiveEnv, AnyContent] =>
     Ok(views.html.profileBuilder(request.identity, socialProviderRegistry))
@@ -68,80 +68,5 @@ class ProfileBuilderController @Inject()
     logger.info(s"Collecting profile for provider ${provider}, authInfo = ${authInfo} | profile: ${profile}")
 
     Future.successful(Json.toJson(profile))
-  }
-
-  def buildGitHubQuery(login : String) : String = {
-    val query =
-s"""
-query {
-  user(login:"${login}") {
-    name
-    avatarUrl
-    bio
-    bioHTML
-    company
-    login
-    location
-    url
-    websiteUrl
-    organizations(first: 10) {
-      nodes {
-        name
-        url
-        login
-      }
-      totalCount
-    }
-    projects(first: 10) {
-      nodes {
-        name
-        url
-      }
-    }
-    repositories(first: 10, privacy:PUBLIC) {
-      nodes {
-        name
-        owner {
-          login
-          url
-        }
-        url
-        isFork
-      }
-      totalCount
-    }
-    repositoriesContributedTo(first: 10, privacy:PUBLIC) {
-      nodes {
-        name
-        owner {
-          login
-          id
-        }
-        isFork
-      }
-      totalCount
-    }
-  }
-}
-  """    
-
-    val jsonQuery = Json.obj(
-        "query" -> query
-    )
-
-    jsonQuery.toString
-  }
-
-  def collectGitHubProfile(authInfo : OAuth2Info, profile : CommonSocialProfile) : Future[JsValue] = {
-    val request =
-      ws.url(config.get[String]("github.api.endpoint")).addHttpHeaders("Authorization" -> s"bearer ${authInfo.accessToken}")
-
-    val query = buildGitHubQuery(profile.loginInfo.providerKey)
-
-    logger.info("Sending GitHub request: " + query)
-    request.post(query).map { response =>
-      logger.info(response.body)
-      response.json
-    }
   }
 }

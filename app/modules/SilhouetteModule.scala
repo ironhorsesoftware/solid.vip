@@ -37,8 +37,9 @@ import play.api.Configuration
 import play.api.mvc.{Cookie, CookieHeaderEncoding}
 import play.api.libs.ws.WSClient
 
-import daos.{MemberDAO, CredentialsDAO, AuthTokenDAO, AuthTokenDAOImpl}
+import daos.{MemberDAO, CredentialsDAO, ProfileDAO, AuthTokenDAO, AuthTokenDAOImpl}
 import daos.slick.{SlickMemberDAO, SlickCredentialsDAO}
+import daos.mongodb.{MongoProfileDAO}
 import models.Member
 import services.{AuthTokenService, AuthTokenServiceImpl, MemberService, MemberServiceImpl}
 import services.{SolidGitHubProvider, SolidLinkedInProvider, SolidTwitterProvider, SolidGoogleProvider, SolidFacebookProvider}
@@ -85,6 +86,8 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
 
     bind[CredentialsDAO].to[SlickCredentialsDAO]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[CredentialsDAO]
+
+    bind[ProfileDAO].to[MongoProfileDAO]
 
     bind[DelegableAuthInfoDAO[OAuth1Info]].toInstance(new InMemoryAuthInfoDAO[OAuth1Info])
     bind[DelegableAuthInfoDAO[OAuth2Info]].toInstance(new InMemoryAuthInfoDAO[OAuth2Info])
