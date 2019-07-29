@@ -35,8 +35,6 @@ class MongoProfileDAO @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit
     profiles.flatMap { collection =>
       collection.find(Json.obj("loginInfo" -> loginInfo), projection).one[Profile]
     }
-
-    Future.failed(new UnsupportedOperationException)
   }
 
   def update(profile : Profile) : Future[Unit] = {
