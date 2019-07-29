@@ -9,7 +9,6 @@ import play.api.http.HttpEntity
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json._
 import play.api.mvc.{ControllerComponents, AbstractController, AnyContent, Request}
-import play.modules.reactivemongo._
 
 import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, AuthInfo}
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
@@ -19,14 +18,15 @@ import com.mohiva.play.silhouette.impl.providers.{OAuth2Info, OAuth2Provider}
 import com.mohiva.play.silhouette.impl.providers.oauth1.{TwitterProvider}
 import com.mohiva.play.silhouette.impl.providers.oauth2.{LinkedInProvider, FacebookProvider}
 
+import daos.ProfileDAO
 import models.Member
 import modules.InteractiveEnv
 import services.{SolidProfileBuilder, SolidGitHubProvider}
 
 class ProfileBuilderController @Inject()
-    (cc: ControllerComponents, silhouette : Silhouette[InteractiveEnv], socialProviderRegistry: SocialProviderRegistry, val reactiveMongoApi: ReactiveMongoApi)
+    (cc: ControllerComponents, silhouette : Silhouette[InteractiveEnv], socialProviderRegistry: SocialProviderRegistry, val profileDao : ProfileDAO)
     (implicit assets: AssetsFinder, ex: ExecutionContext)
-    extends AbstractController(cc) with MongoController with ReactiveMongoComponents with I18nSupport with Logging { 
+    extends AbstractController(cc) with I18nSupport with Logging { 
 
   def view = silhouette.SecuredAction { implicit request : SecuredRequest[InteractiveEnv, AnyContent] =>
     Ok(views.html.profileBuilder(request.identity, socialProviderRegistry))
