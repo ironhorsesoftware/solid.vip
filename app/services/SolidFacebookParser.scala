@@ -17,11 +17,11 @@ class SolidFacebookParser extends SocialProfileParser[JsValue, Profile, OAuth2In
     Profile(
         loginInfo = LoginInfo(SolidFacebookProvider.ID, (json \ "id").as[String]),
         name = (json \ "name").as[String],
-        picture = (json \ "picture" \ "data" \ "url").asOpt[String],
+        picture = (json \ "picture" \ "data" \ "url").asOpt[String].filter(item => !item.isEmpty),
         title = None,
         summary = None,
         location = None,
-        email = (json \ "email").asOpt[String],
+        email = (json \ "email").asOpt[String].filter(item => !item.isEmpty),
         website = None,
         twitterUrl = None,
         gitHubUrl = None,

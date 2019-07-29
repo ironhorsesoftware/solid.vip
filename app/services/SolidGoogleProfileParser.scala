@@ -57,7 +57,7 @@ class SolidGoogleProfileParser extends SocialProfileParser[JsValue, Profile, OAu
   def getPrimaryItem(json : JsValue, category : String, record: String) : Option[String] = {
     (json \ category).as[JsArray].value.find(isPrimary).map { item =>
       (item \ record).as[JsString].value.toString
-    }
+    }.filter(item => !item.isEmpty)
   }
 
   def getName(json : JsValue) : Try[String] = {

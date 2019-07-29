@@ -18,11 +18,11 @@ class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, Profile, O
 
   def parseCommonSocialProfile(json : JsValue, authInfo : OAuth2Info) : CommonSocialProfile = {
     val userID = (json \ "id").as[String]
-    val firstName = (json \ "localizedFirstName").asOpt[String]
-    val lastName = (json \ "localizedLastName").asOpt[String]
-    val fullName = (json \ "vanityName").asOpt[String]
+    val firstName = (json \ "localizedFirstName").asOpt[String].filter(item => !item.isEmpty)
+    val lastName = (json \ "localizedLastName").asOpt[String].filter(item => !item.isEmpty)
+    val fullName = (json \ "vanityName").asOpt[String].filter(item => !item.isEmpty)
     val avatarURL = findAvatarUrl(json)
-    val email = (json \ "emailAddress").asOpt[String]
+    val email = (json \ "emailAddress").asOpt[String].filter(item => !item.isEmpty)
 
     CommonSocialProfile(
       loginInfo = LoginInfo(SolidLinkedInProvider.ID, userID),
@@ -35,14 +35,14 @@ class SolidLinkedInProfileParser extends SocialProfileParser[JsValue, Profile, O
 
   def parseProfile(json : JsValue, authInfo : OAuth2Info) : Profile = {
     val userID = (json \ "id").as[String]
-    val firstName = (json \ "localizedFirstName").asOpt[String]
-    val lastName = (json \ "localizedLastName").asOpt[String]
+    val firstName = (json \ "localizedFirstName").asOpt[String].filter(item => !item.isEmpty)
+    val lastName = (json \ "localizedLastName").asOpt[String].filter(item => !item.isEmpty)
 
     val avatarUrlOpt = findAvatarUrl(json) 
 
     Profile(
         loginInfo = LoginInfo(SolidLinkedInProvider.ID, userID),
-        name = firstName + " " + lastName,
+        name = firstName.getOrElse("") + " " + lastName.getOrElse(""),
         picture = avatarUrlOpt,
         title = None,
         summary = None,

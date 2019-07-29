@@ -33,20 +33,17 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAu
 
     val login = (root \ "login").as[String]
 
-    val summary = (root \ "bio").asOpt[String]
-    val summaryHtml = (root \ "bioHTML").asOpt[String]
-
     models.Profile(
         loginInfo = LoginInfo(SolidGitHubProvider.ID, login),
         name = (root \ "name").as[String],
-        picture = (root \ "avatarUrl").asOpt[String],
-        title = (root \ "company").asOpt[String],
-        summary = None, // TODO
-        location = (root \ "location").asOpt[String],
-        email = (root \ "email").asOpt[String],
-        website = (root \ "websiteUrl").asOpt[String],
+        picture = (root \ "avatarUrl").asOpt[String].filter(item => !item.isEmpty),
+        title = (root \ "company").asOpt[String].filter(item => !item.isEmpty),
+        summary = (root \ "bio").asOpt[String].filter(item => !item.isEmpty),
+        location = (root \ "location").asOpt[String].filter(item => !item.isEmpty),
+        email = (root \ "email").asOpt[String].filter(item => !item.isEmpty),
+        website = (root \ "websiteUrl").asOpt[String].filter(item => !item.isEmpty),
         twitterUrl = None,
-        gitHubUrl = (root \ "url").asOpt[String],
+        gitHubUrl = (root \ "url").asOpt[String].filter(item => !item.isEmpty),
         Some(login),
         projects = getProjects(root),
         workExperience = List()
