@@ -65,7 +65,7 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAu
 
         Project(
             title = (repository \ "name").as[String],
-            description = (repository \ "description").as[String],
+            description = (repository \ "description").asOpt[String].getOrElse(""),
             link = (repository \ "url").as[String],
             thumbnail = thumbnailOpt,
             isContributedTo = (repository \ "isFork").as[JsBoolean].value
@@ -76,7 +76,7 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAu
       (json \ "repositoriesContributedTo" \ "nodes").as[JsArray].value.map { repository =>
         Project(
             title = (repository \ "name").as[String],
-            description = (repository \ "description").as[String],
+            description = (repository \ "description").asOpt[String].getOrElse(""),
             link = (repository \ "url").as[String],
             thumbnail = (repository \ "openGraphImageUrl").asOpt[String],
             isContributedTo = true
