@@ -48,11 +48,10 @@ class ProfileBuilderController @Inject()
         p.authenticate().flatMap {
           case Left(result) => Future.successful(result)
           case Right(authInfo) => for {
-            profile <- p.retrieveProfile(authInfo)
-            result <- collectProfile(p.id, authInfo, profile)
+            profileOpt <- profileDao.retrieve(request.identity.loginInfo)
+            newProfile <- p.retrieveProfile(authInfo)
           } yield {
-            Ok(result)
-            //Ok(views.html.profileBuilder(request.identity, socialProviderRegistry))
+            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profileOpt.getOrElse(Profile(request.identity)), Some(newProfile)))
           }
         }
       case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))

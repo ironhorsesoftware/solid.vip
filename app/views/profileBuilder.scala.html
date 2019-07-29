@@ -2,7 +2,7 @@
 
 @import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 
-@(member : models.Member, socialProviders: SocialProviderRegistry, profile : Profile, socialProfile : Option[Profile])(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
+@(member : models.Member, socialProviders: SocialProviderRegistry, profile : Profile, socialProfileOpt : Option[Profile])(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,6 +40,16 @@
 }
 
             </fieldset>
+
+			<h1>Profile</h1>
+
+			<ul>
+				<li>@profile.name</li>
+@if(socialProfileOpt.isDefined) {
+				<li>@socialProfileOpt.get.name</li>
+}
+			</ul>
+
         </main>
 
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
