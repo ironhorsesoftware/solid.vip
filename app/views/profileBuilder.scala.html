@@ -2,9 +2,21 @@
 
 @import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 
-@(member : models.Member, socialProviders: SocialProviderRegistry, profile : Profile, socialProfileOpt : Option[Profile])(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
+@(member : models.Member, socialProviders: SocialProviderRegistry, optionMap : Map[String, List[(String, String)]])(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
 
 @implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-12", "col-md-12") }
+
+@displayItem(item : (String, String)) = {
+	<li>@item._1</li>
+}
+
+@displayList(list : List[(String, String)]) = {
+<ul>
+  @for(item <- list) {
+    @displayItem(item)
+  }
+</ul>
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,39 +57,44 @@
 
 @helper.form(action = controllers.routes.ProfileBuilderController.save) {
 			<h4>Select Name</h4>
-			<p><em>Your name can be retrieved from any of the above services.</em></p>			
-			<ul>
-				<li>@profile.name</li>
-  @if(socialProfileOpt.isDefined) {
-				<li>@socialProfileOpt.get.name</li>
-  }
-			</ul>
+			<p><em>Your name can be retrieved from any of the above services.</em></p>
+			@displayList(optionMap("name"))
+
             <h4>Select Photo</h4>
             <p><em>Your photo can be retrieved from any of the above services.</em></p>
+            @displayList(optionMap("picture"))
 
 			<h4>Select Title</h4>
             <p><em>Your title can be retrieved from either GitHub or Google.</em></p>
+            @displayList(optionMap("title"))
 
 			<h4>Select Summary</h4>
 			<p><em>A summary can be retrieved from either GitHub or Twitter.</em></p>
+			@displayList(optionMap("summary"))
 
 			<h4>Select Location</h4>
 			<p><em>Your location can be retrieved from either GitHub or Twitter.</em></p>
+			@displayList(optionMap("location"))
 
 			<h4>Select Email</h4>
 			<p><em>Your e-mail can be retrieved from GitHub, Twitter, Facebook, or Google.</em></p>
+			@displayList(optionMap("email"))
 
 			<h4>Select Website</h4>
 			<p><em>Your website can be retrieved from either GitHub or Twitter. </em></p>
+			@displayList(optionMap("website"))
 
 			<h4>Select Twitter URL</h4>
 			<p><em>Your Twitter URL can be retrieved from Twitter.</em></p>
+			@displayList(optionMap("twitterUrl"))
 
 			<h4>Select GitHub URL</h4>
 			<p><em>Your GitHub URL can be retrieved from GitHub.</em></p>
+			@displayList(optionMap("gitHubUrl"))
 
 			<h4>Select GitHub Username</h4>
 			<p><em>Your GitHub Username can be retrieved from GitHub.</em></p>
+			@displayList(optionMap("gitHubUsername"))
 
 			<h4>Select Projects</h4>
 			<p><em>Your projects can be retrieved from GitHub.</em></p>

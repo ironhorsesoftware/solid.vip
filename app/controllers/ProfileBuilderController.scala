@@ -4,6 +4,8 @@ import javax.inject._
 
 import scala.concurrent.{Future, ExecutionContext}
 
+import scala.collection.mutable.{Map => MutableMap, ListBuffer}
+
 import play.api.Logging
 import play.api.http.HttpEntity
 import play.api.i18n.{I18nSupport, Messages}
@@ -32,7 +34,7 @@ class ProfileBuilderController @Inject()
     profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
       profileOpt.getOrElse(Profile(request.identity))
     }.map { profile =>
-      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, None))
+      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, buildOptions(profile, None)))
     }
   }
 
@@ -51,7 +53,7 @@ class ProfileBuilderController @Inject()
             profileOpt <- profileDao.retrieve(request.identity.loginInfo)
             newProfile <- p.retrieveProfile(authInfo)
           } yield {
-            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profileOpt.getOrElse(Profile(request.identity)), Some(newProfile)))
+            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, buildOptions(profileOpt.getOrElse(Profile(request.identity)), Some(newProfile))))
           }
         }
       case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
@@ -62,22 +64,68 @@ class ProfileBuilderController @Inject()
     }
   }
 
-  def collectProfile(provider : String, authInfo : AuthInfo, profile : models.Profile) : Future[JsValue] = {
-    implicit val loginInfoReads = Json.writes[LoginInfo]
-    implicit val projectReads = Json.writes[models.Project]
-    implicit val workExperienceReads = Json.writes[models.WorkExperience]
-    implicit val profileReads = Json.writes[models.Profile]
-
-    logger.info(s"Collecting profile for provider ${provider}, authInfo = ${authInfo} | profile: ${profile}")
-
-    Future.successful(Json.toJson(profile))
-  }
-
   def save = silhouette.SecuredAction.async { implicit request : SecuredRequest[InteractiveEnv, AnyContent] =>
     profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
       profileOpt.getOrElse(Profile(request.identity))
     }.map { profile =>
-      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, None))
+      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, buildOptions(profile, None)))
     }
+  }
+
+  def buildOptions(profile : Profile, alternate : Option[Profile]) : Map[String, List[(String, String)]] = {
+    val noneOption = ("None" -> "None")
+
+    var nameOptions = ListBuffer(noneOption)
+    var pictureOptions = ListBuffer(noneOption)
+    var titleOptions = ListBuffer(noneOption)
+    var summaryOptions = ListBuffer(noneOption)
+    var locationOptions = ListBuffer(noneOption)
+    var emailOptions = ListBuffer(noneOption)
+    var websiteOptions = ListBuffer(noneOption)
+    var twitterUrlOptions = ListBuffer(noneOption) 
+    var gitHubUrlOptions = ListBuffer(noneOption)
+    var gitHubUsernameOptions = ListBuffer(noneOption)
+
+    nameOptions += (profile.name -> profile.name)
+    addOption(pictureOptions, profile.picture)
+    addOption(titleOptions, profile.title)
+    addOption(summaryOptions, profile.summary)
+    addOption(locationOptions, profile.location)
+    addOption(emailOptions, profile.email)
+    addOption(websiteOptions, profile.website)
+    addOption(twitterUrlOptions, profile.twitterUrl)
+    addOption(gitHubUrlOptions, profile.gitHubUrl)
+    addOption(gitHubUsernameOptions, profile.gitHubUsername)
+
+    alternate.foreach { altProfile =>
+      nameOptions += (altProfile.name -> altProfile.name)
+      addOption(pictureOptions, altProfile.picture)
+      addOption(titleOptions, altProfile.title)
+      addOption(summaryOptions, altProfile.summary)
+      addOption(locationOptions, altProfile.location)
+      addOption(emailOptions, altProfile.email)
+      addOption(websiteOptions, altProfile.website)
+      addOption(twitterUrlOptions, altProfile.twitterUrl)
+      addOption(gitHubUrlOptions, altProfile.gitHubUrl)
+      addOption(gitHubUsernameOptions, altProfile.gitHubUsername)
+    }
+
+    var mutableMap = MutableMap[String, List[(String, String)]]()
+    mutableMap += ("name" -> nameOptions.toList)
+    mutableMap += ("picture" -> pictureOptions.toList)
+    mutableMap += ("title" -> titleOptions.toList)
+    mutableMap += ("summary" -> summaryOptions.toList)
+    mutableMap += ("location" -> locationOptions.toList)
+    mutableMap += ("email" -> emailOptions.toList)
+    mutableMap += ("website" -> websiteOptions.toList)
+    mutableMap += ("twitterUrl" -> twitterUrlOptions.toList)
+    mutableMap += ("gitHubUrl" -> gitHubUrlOptions.toList)
+    mutableMap += ("gitHubUsername" -> gitHubUsernameOptions.toList)
+
+    mutableMap.toMap
+  }
+
+  def addOption(list : ListBuffer[(String, String)], itemOpt : Option[String]) {
+    itemOpt.foreach(item => list += (item -> item))
   }
 }
