@@ -110,6 +110,7 @@ query {
           login
           id
         }
+        url
       }
       totalCount
     }
