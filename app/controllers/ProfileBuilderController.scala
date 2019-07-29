@@ -19,7 +19,7 @@ import com.mohiva.play.silhouette.impl.providers.oauth1.{TwitterProvider}
 import com.mohiva.play.silhouette.impl.providers.oauth2.{LinkedInProvider, FacebookProvider}
 
 import daos.ProfileDAO
-import models.Member
+import models.{Member, Profile}
 import modules.InteractiveEnv
 import services.{SolidProfileBuilder, SolidGitHubProvider}
 
@@ -28,8 +28,12 @@ class ProfileBuilderController @Inject()
     (implicit assets: AssetsFinder, ex: ExecutionContext)
     extends AbstractController(cc) with I18nSupport with Logging { 
 
-  def view = silhouette.SecuredAction { implicit request : SecuredRequest[InteractiveEnv, AnyContent] =>
-    Ok(views.html.profileBuilder(request.identity, socialProviderRegistry))
+  def view = silhouette.SecuredAction.async { implicit request : SecuredRequest[InteractiveEnv, AnyContent] =>
+    profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
+      profileOpt.getOrElse(Profile(request.identity))
+    }.map { profile =>
+      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, None))
+    }
   }
 
   /**

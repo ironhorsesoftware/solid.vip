@@ -17,3 +17,22 @@ case class Profile (
     gitHubUsername : Option[String],
     projects : List[Project],
     workExperience : List[WorkExperience]) extends SocialProfile
+
+object Profile {
+  def apply(member : Member) : Profile = 
+    Profile(
+        loginInfo = member.loginInfo,
+        name = member.name,
+        picture = None,
+        title = None,
+        summary = None,
+        location = None,
+        email = member.email,
+        website = None,
+        twitterUrl = None,
+        gitHubUrl = None,
+        gitHubUsername = None,
+        projects = List(),
+        workExperience = List()
+    )
+}

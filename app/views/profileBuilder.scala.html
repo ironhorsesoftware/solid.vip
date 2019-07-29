@@ -2,7 +2,7 @@
 
 @import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 
-@(member : models.Member, socialProviders: SocialProviderRegistry)(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
+@(member : models.Member, socialProviders: SocialProviderRegistry, profile : Profile, socialProfile : Option[Profile])(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
 
 <!DOCTYPE html>
 <html lang="en">
