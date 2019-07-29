@@ -240,7 +240,11 @@
 	      <div class="container text-center">
 	        <h3>Create Your Profile</h3>
 	        <p>Click below and start creating your professional profile today!</p>
+@if(member.isEmpty) {
 	        <a class="cta-btn" href="@routes.SignUpController.view">Get Started</a>
+} else {
+	        <a class="cta-btn" href="@routes.ProfileBuilderController.view">Get Started</a>
+}
 	      </div>
 	    </section><!-- #call-to-action -->
 	
