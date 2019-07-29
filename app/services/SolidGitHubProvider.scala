@@ -89,6 +89,9 @@ query {
     repositories(first: 10, privacy:PUBLIC) {
       nodes {
         name
+        description
+        openGraphImageUrl
+        usesCustomOpenGraphImage
         owner {
           login
           url
@@ -101,11 +104,12 @@ query {
     repositoriesContributedTo(first: 10, privacy:PUBLIC) {
       nodes {
         name
+        description
+        openGraphImageUrl
         owner {
           login
           id
         }
-        isFork
       }
       totalCount
     }

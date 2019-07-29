@@ -13,7 +13,7 @@ import com.mohiva.play.silhouette.impl.providers.{CommonSocialProfileBuilder, Co
 import com.mohiva.play.silhouette.impl.providers.SocialProfileParser
 import com.mohiva.play.silhouette.impl.providers.oauth2.GitHubProfileParser
 
-import models.Profile
+import models.{Profile, Project}
 
 class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAuth2Info] with Logging {
 
@@ -29,7 +29,7 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAu
   def parse(json: JsValue, authInfo: OAuth2Info) : Future[models.Profile] = Future.successful {
     logger.info(s"json: ${json} | authInfo: ${authInfo}")
 
-    val root = (json \ "data" \ "viewer")
+    val root = (json \ "data" \ "viewer").as[JsValue]
 
     val login = (root \ "login").as[String]
 
@@ -48,8 +48,41 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAu
         twitterUrl = None,
         gitHubUrl = (root \ "url").asOpt[String],
         Some(login),
-        projects = List(), // TODO
+        projects = getProjects(root),
         workExperience = List()
     )
+  }
+
+  def getProjects(json : JsValue) : List[Project] = {
+    val projects =
+      (json \ "repositories").as[JsArray].value.map { repository =>
+        val thumbnailOpt =
+          if ((repository \ "usesCustomOpenGraphImage").as[JsBoolean].value) {
+            (repository \ "openGraphImageUrl").asOpt[String]
+          } else {
+            None
+          }
+
+        Project(
+            title = (repository \ "name").as[String],
+            description = (repository \ "description").as[String],
+            link = (repository \ "url").as[String],
+            thumbnail = thumbnailOpt,
+            isContributedTo = (repository \ "isFork").as[JsBoolean].value
+        )
+      }
+
+    val contributions =
+      (json \ "repositoriesContributedTo").as[JsArray].value.map { repository =>
+        Project(
+            title = (repository \ "name").as[String],
+            description = (repository \ "description").as[String],
+            link = (repository \ "url").as[String],
+            thumbnail = (repository \ "openGraphImageUrl").asOpt[String],
+            isContributedTo = true
+        )
+      }
+
+    (projects ++ contributions).toList
   }
 }
