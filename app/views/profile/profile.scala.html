@@ -1,0 +1,45 @@
+@import models.{Profile, Project, WorkExperience}
+
+@(profile: models.Profile)(implicit header: RequestHeader, flash : Flash, messages : Messages)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>@profile.name</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="@profile.name Profile Page">
+
+        <link href="@routes.Assets.versioned("images/favicon.png")" rel="shortcut icon" type="image/png">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <!-- github calendar css -->
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/github-calendar/dist/github-calendar.css")">
+
+        <!-- github acitivity css -->    
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css">
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/github-activity/github-activity-0.1.5.min.css")">
+
+        <!-- FontAwesome JS -->
+        <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+    
+        <!-- Theme CSS -->  
+        <link id="theme-style" rel="stylesheet" href="@routes.Assets.versioned("stylesheets/profile.css")">
+    </head>
+    <body>
+
+        <!-- Javascript -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("lib/popper.min.js")"></script> 
+        <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>    
+        <!-- github calendar plugin -->
+        <script type="text/javascript" src="@routes.Assets.versioned("lib/github-calendar/dist/github-calendar.min.js")"></script>
+        <!-- github activity plugin -->
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("lib/github-activity/github-activity-0.1.5.min.js")"></script>
+        <!-- custom js -->
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/profile.js")"></script>            
+    </body>
+</html>
