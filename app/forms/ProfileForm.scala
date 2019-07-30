@@ -4,10 +4,15 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json._
 
+import com.mohiva.play.silhouette.api.LoginInfo
+
 import models.{Profile, Project, WorkExperience}
 
 object ProfileForm {
-  case class Data(
+
+    val NO_VALUE = "None"
+
+    case class Data(
       name : String,
       picture : String,
       title : String,
@@ -19,8 +24,30 @@ object ProfileForm {
       gitHubUrl : String,
       gitHubUsername : String,
       projects : Seq[String],
-      workExperience : Seq[String]
-  )
+      workExperience : Seq[String]) {
+
+    def toProfile(loginInfo : LoginInfo) : Profile = {
+      Profile(
+          loginInfo = loginInfo,
+          name = name,
+          picture = Some(picture).filter(noValueFilter),
+          title = Some(title).filter(noValueFilter),
+          summary = Some(summary).filter(noValueFilter),
+          location = Some(location).filter(noValueFilter),
+          email = Some(email).filter(noValueFilter),
+          website = Some(website).filter(noValueFilter),
+          twitterUrl = Some(twitterUrl).filter(noValueFilter),
+          gitHubUrl = Some(gitHubUrl).filter(noValueFilter),
+          gitHubUsername = Some(gitHubUsername).filter(noValueFilter),
+          projects = projects.map(convertProjectJson).toList,
+          workExperience = workExperience.map(convertWorkExperienceJson).toList
+      )
+    }
+
+    private def noValueFilter(item : String) : Boolean = (!item.isEmpty && item != NO_VALUE)
+    private def convertProjectJson(project : String) : Project = (Json.parse(project).as[Project])
+    private def convertWorkExperienceJson(workExperience : String) : WorkExperience = (Json.parse(workExperience).as[WorkExperience])
+  }
 
   val form = Form(
     mapping(
@@ -56,16 +83,8 @@ object ProfileForm {
           workExperience = profile.workExperience.map(convertWorkExperience))
     }
 
-    private def convertOption(opt : Option[String]) : String = {
-      opt.getOrElse("None")
-    }
-
-    private def convertProject(project : Project) : String = {
-      Json.toJson(project).toString
-    }
-
-    private def convertWorkExperience(workExperience : WorkExperience) : String = {
-      Json.toJson(workExperience).toString
-    }
+    private def convertOption(opt : Option[String]) : String = opt.getOrElse(NO_VALUE)
+    private def convertProject(project : Project) : String = Json.toJson(project).toString
+    private def convertWorkExperience(workExperience : WorkExperience) : String = Json.toJson(workExperience).toString
   }
 }

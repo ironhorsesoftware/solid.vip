@@ -35,7 +35,7 @@ class ProfileBuilderController @Inject()
     profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
       profileOpt.getOrElse(Profile(request.identity))
     }.map { profile =>
-      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form.fill(ProfileForm.Data(profile)), buildOptions(profile, None)))
+      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, ProfileForm.form.fill(ProfileForm.Data(profile)), buildOptions(profile, None)))
     }
   }
 
@@ -55,7 +55,7 @@ class ProfileBuilderController @Inject()
             newProfile <- p.retrieveProfile(authInfo)
           } yield {
             val profile = profileOpt.getOrElse(Profile(request.identity))
-            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form.fill(ProfileForm.Data(profile)), buildOptions(profile, Some(newProfile))))
+            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, ProfileForm.form.fill(ProfileForm.Data(profile)), buildOptions(profile, Some(newProfile))))
           }
         }
       case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
@@ -67,10 +67,24 @@ class ProfileBuilderController @Inject()
   }
 
   def save = silhouette.SecuredAction.async { implicit request : SecuredRequest[InteractiveEnv, AnyContent] =>
-    profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
-      profileOpt.getOrElse(Profile(request.identity))
-    }.map { profile =>
-      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form.fill(ProfileForm.Data(profile)), buildOptions(profile, None)))
+    profileDao.retrieve(request.identity.loginInfo).flatMap { existingProfileOpt =>
+      ProfileForm.form.bindFromRequest.fold (
+        form => Future.successful(BadRequest(views.html.profileBuilder(request.identity, socialProviderRegistry, form, buildOptions(existingProfileOpt.getOrElse(Profile(request.identity)), None)))),
+        data => {
+          val newProfile = data.toProfile(request.identity.loginInfo)
+
+          val updateResult =
+            if (existingProfileOpt.isDefined) {
+              profileDao.update(newProfile)
+            } else {
+              profileDao.create(newProfile)
+            }
+
+          updateResult.map { _ =>
+            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, ProfileForm.form.fill(ProfileForm.Data(newProfile)), buildOptions(newProfile, None)))
+          }
+        }
+      )
     }
   }
 
