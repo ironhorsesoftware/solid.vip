@@ -1,8 +1,10 @@
 @* profileBuilder Template File *@
 
 @import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+@import forms.ProfileForm.Data
+@import models.Profile
 
-@(member : models.Member, socialProviders: SocialProviderRegistry, optionMap : Map[String, List[(String, String)]])(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
+@(member : models.Member, socialProviders: SocialProviderRegistry, profile : Profile, form : Form[Data], optionMap : Map[String, List[(String, String)]])(implicit request : RequestHeader, messages : Messages, flash : Flash, assets: AssetsFinder)
 
 @implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-12", "col-md-12") }
 
@@ -59,6 +61,8 @@
 			<h4>Select Name</h4>
 			<p><em>Your name can be retrieved from any of the above services.</em></p>
 			@displayList(optionMap("name"))
+			@helper.inputRadioGroup(form("name"), options = optionMap("name"))
+			
 
             <h4>Select Photo</h4>
             <p><em>Your photo can be retrieved from any of the above services.</em></p>

@@ -21,6 +21,7 @@ import com.mohiva.play.silhouette.impl.providers.oauth1.{TwitterProvider}
 import com.mohiva.play.silhouette.impl.providers.oauth2.{LinkedInProvider, FacebookProvider}
 
 import daos.ProfileDAO
+import forms.ProfileForm
 import models.{Member, Profile, Project, WorkExperience}
 import modules.InteractiveEnv
 import services.{SolidProfileBuilder, SolidGitHubProvider}
@@ -34,7 +35,7 @@ class ProfileBuilderController @Inject()
     profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
       profileOpt.getOrElse(Profile(request.identity))
     }.map { profile =>
-      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, buildOptions(profile, None)))
+      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form, buildOptions(profile, None)))
     }
   }
 
@@ -53,7 +54,8 @@ class ProfileBuilderController @Inject()
             profileOpt <- profileDao.retrieve(request.identity.loginInfo)
             newProfile <- p.retrieveProfile(authInfo)
           } yield {
-            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, buildOptions(profileOpt.getOrElse(Profile(request.identity)), Some(newProfile))))
+            val profile = profileOpt.getOrElse(Profile(request.identity))
+            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form, buildOptions(profile, Some(newProfile))))
           }
         }
       case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
@@ -68,7 +70,7 @@ class ProfileBuilderController @Inject()
     profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
       profileOpt.getOrElse(Profile(request.identity))
     }.map { profile =>
-      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, buildOptions(profile, None)))
+      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form, buildOptions(profile, None)))
     }
   }
 
