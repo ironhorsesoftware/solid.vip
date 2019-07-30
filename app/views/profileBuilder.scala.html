@@ -58,6 +58,8 @@
             </fieldset>
 
 @helper.form(action = controllers.routes.ProfileBuilderController.save) {
+            @helper.CSRF.formField
+
 			@helper.inputRadioGroup(form("Name"), options = optionMap("name"))
 			<p><em>Your name can be retrieved from any of the above services.</em></p>
 
