@@ -35,7 +35,7 @@ class ProfileBuilderController @Inject()
     profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
       profileOpt.getOrElse(Profile(request.identity))
     }.map { profile =>
-      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form, buildOptions(profile, None)))
+      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form.fill(ProfileForm.Data(profile)), buildOptions(profile, None)))
     }
   }
 
@@ -55,7 +55,7 @@ class ProfileBuilderController @Inject()
             newProfile <- p.retrieveProfile(authInfo)
           } yield {
             val profile = profileOpt.getOrElse(Profile(request.identity))
-            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form, buildOptions(profile, Some(newProfile))))
+            Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form.fill(ProfileForm.Data(profile)), buildOptions(profile, Some(newProfile))))
           }
         }
       case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
@@ -70,7 +70,7 @@ class ProfileBuilderController @Inject()
     profileDao.retrieve(request.identity.loginInfo).map { profileOpt =>
       profileOpt.getOrElse(Profile(request.identity))
     }.map { profile =>
-      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form, buildOptions(profile, None)))
+      Ok(views.html.profileBuilder(request.identity, socialProviderRegistry, profile, ProfileForm.form.fill(ProfileForm.Data(profile)), buildOptions(profile, None)))
     }
   }
 
