@@ -58,52 +58,40 @@
             </fieldset>
 
 @helper.form(action = controllers.routes.ProfileBuilderController.save) {
-			<h4>Select Name</h4>
+			@helper.inputRadioGroup(form("Name"), options = optionMap("name"))
 			<p><em>Your name can be retrieved from any of the above services.</em></p>
-			@displayList(optionMap("name"))
-			@helper.inputRadioGroup(form("name"), options = optionMap("name"))
-			
 
-            <h4>Select Photo</h4>
+			@helper.inputRadioGroup(form("Picture"), options = optionMap("picture"))
             <p><em>Your photo can be retrieved from any of the above services.</em></p>
-            @displayList(optionMap("picture"))
 
-			<h4>Select Title</h4>
+			@helper.inputRadioGroup(form("Title"), options = optionMap("title"))
             <p><em>Your title can be retrieved from either GitHub or Google.</em></p>
-            @displayList(optionMap("title"))
 
-			<h4>Select Summary</h4>
+			@helper.inputRadioGroup(form("Summary"), options = optionMap("summary"))
 			<p><em>A summary can be retrieved from either GitHub or Twitter.</em></p>
-			@displayList(optionMap("summary"))
 
-			<h4>Select Location</h4>
+			@helper.inputRadioGroup(form("Location"), options = optionMap("location"))
 			<p><em>Your location can be retrieved from either GitHub or Twitter.</em></p>
-			@displayList(optionMap("location"))
 
-			<h4>Select Email</h4>
+			@helper.inputRadioGroup(form("Email"), options = optionMap("email"))
 			<p><em>Your e-mail can be retrieved from GitHub, Twitter, Facebook, or Google.</em></p>
-			@displayList(optionMap("email"))
 
-			<h4>Select Website</h4>
+			@helper.inputRadioGroup(form("Website"), options = optionMap("website"))
 			<p><em>Your website can be retrieved from either GitHub or Twitter. </em></p>
-			@displayList(optionMap("website"))
 
-			<h4>Select Twitter URL</h4>
+			@helper.inputRadioGroup(form("TwitterUrl"), options = optionMap("twitterUrl"))
 			<p><em>Your Twitter URL can be retrieved from Twitter.</em></p>
-			@displayList(optionMap("twitterUrl"))
 
-			<h4>Select GitHub URL</h4>
+			@helper.inputRadioGroup(form("GitHubUrl"), options = optionMap("gitHubUrl"))
 			<p><em>Your GitHub URL can be retrieved from GitHub.</em></p>
-			@displayList(optionMap("gitHubUrl"))
 
-			<h4>Select GitHub Username</h4>
+			@helper.inputRadioGroup(form("GitHubUsername"), options = optionMap("gitHubUsername"))
 			<p><em>Your GitHub Username can be retrieved from GitHub.</em></p>
-			@displayList(optionMap("gitHubUsername"))
 
-			<h4>Select Projects</h4>
+			@helper.inputCheckboxGroup(form("Projects"), options = optionMap("projects"))
 			<p><em>Your projects can be retrieved from GitHub.</em></p>
 
-			<h4>Select Work Experiences</h4>
+			@helper.inputCheckboxGroup(form("WorkExperience"), options = optionMap("workExperience"))
 			<p><em>Your work history can be retrieved from Google.</em></p>
 }
         </main>

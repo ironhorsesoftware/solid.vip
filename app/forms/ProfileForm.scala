@@ -24,18 +24,18 @@ object ProfileForm {
 
   val form = Form(
     mapping(
-      "name" -> nonEmptyText,
-      "picture" -> text,
-      "title" -> text,
-      "summary" -> text,
-      "location" -> text,
-      "email" -> text,
-      "website" -> text,
-      "twitterUrl" -> text,
-      "gitHubUrl" -> text,
-      "gitHubUsername" -> text,
-      "projects" -> seq(text),
-      "workExperience" -> seq(text)
+      "Name" -> nonEmptyText,
+      "Picture" -> text,
+      "Title" -> text,
+      "Summary" -> text,
+      "Location" -> text,
+      "Email" -> text,
+      "Website" -> text,
+      "TwitterUrl" -> text,
+      "GitHubUrl" -> text,
+      "GitHubUsername" -> text,
+      "Projects" -> seq(text),
+      "WorkExperience" -> seq(text)
     )(Data.apply)(Data.unapply)
   )
 

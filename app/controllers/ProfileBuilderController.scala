@@ -77,7 +77,6 @@ class ProfileBuilderController @Inject()
   def buildOptions(profile : Profile, alternate : Option[Profile]) : Map[String, List[(String, String)]] = {
     val noneOption = ("None" -> "None")
 
-    var nameOptions = ListBuffer(noneOption)
     var pictureOptions = ListBuffer(noneOption)
     var titleOptions = ListBuffer(noneOption)
     var summaryOptions = ListBuffer(noneOption)
@@ -87,6 +86,7 @@ class ProfileBuilderController @Inject()
     var twitterUrlOptions = ListBuffer(noneOption) 
     var gitHubUrlOptions = ListBuffer(noneOption)
     var gitHubUsernameOptions = ListBuffer(noneOption)
+    var nameOptions : ListBuffer[(String, String)] = ListBuffer()
     var projectOptions : ListBuffer[(String, String)] = ListBuffer()
     var workExperienceOptions : ListBuffer[(String, String)] = ListBuffer()
 
