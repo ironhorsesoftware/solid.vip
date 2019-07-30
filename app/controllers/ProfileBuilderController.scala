@@ -21,7 +21,7 @@ import com.mohiva.play.silhouette.impl.providers.oauth1.{TwitterProvider}
 import com.mohiva.play.silhouette.impl.providers.oauth2.{LinkedInProvider, FacebookProvider}
 
 import daos.ProfileDAO
-import models.{Member, Profile}
+import models.{Member, Profile, Project, WorkExperience}
 import modules.InteractiveEnv
 import services.{SolidProfileBuilder, SolidGitHubProvider}
 
@@ -85,6 +85,11 @@ class ProfileBuilderController @Inject()
     var twitterUrlOptions = ListBuffer(noneOption) 
     var gitHubUrlOptions = ListBuffer(noneOption)
     var gitHubUsernameOptions = ListBuffer(noneOption)
+    var projectOptions : ListBuffer[(String, String)] = ListBuffer()
+    var workExperienceOptions : ListBuffer[(String, String)] = ListBuffer()
+
+    profile.projects.foreach(project => addProject(projectOptions, project))
+    profile.workExperience.foreach(workExperience => addWorkExperience(workExperienceOptions, workExperience))
 
     alternate.foreach { altProfile =>
       nameOptions += (altProfile.name -> altProfile.name)
@@ -97,6 +102,9 @@ class ProfileBuilderController @Inject()
       addOption(twitterUrlOptions, altProfile.twitterUrl)
       addOption(gitHubUrlOptions, altProfile.gitHubUrl)
       addOption(gitHubUsernameOptions, altProfile.gitHubUsername)
+
+      altProfile.projects.foreach (project => addProject(projectOptions, project))
+      altProfile.workExperience.foreach(workExperience => addWorkExperience(workExperienceOptions, workExperience))
     }
 
     nameOptions += (profile.name -> profile.name)
@@ -121,11 +129,21 @@ class ProfileBuilderController @Inject()
     mutableMap += ("twitterUrl" -> twitterUrlOptions.reverse.toList)
     mutableMap += ("gitHubUrl" -> gitHubUrlOptions.reverse.toList)
     mutableMap += ("gitHubUsername" -> gitHubUsernameOptions.reverse.toList)
+    mutableMap += ("projects" -> projectOptions.toList)
+    mutableMap += ("workExperience" -> workExperienceOptions.toList)
 
     mutableMap.toMap
   }
 
   def addOption(list : ListBuffer[(String, String)], itemOpt : Option[String]) {
     itemOpt.foreach(item => list += (item -> item))
+  }
+
+  def addProject(list : ListBuffer[(String, String)], project : Project) {
+    list += (Json.toJson(project).toString -> project.title)
+  }
+
+  def addWorkExperience(list : ListBuffer[(String, String)], workExperience : WorkExperience) {
+    list += (Json.toJson(workExperience).toString -> workExperience.company)
   }
 }
