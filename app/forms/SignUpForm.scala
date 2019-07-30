@@ -1,7 +1,10 @@
 package forms
 
+import scala.util.matching.Regex
+
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 
 /**
  * The form which handles the sign up process.
@@ -13,7 +16,7 @@ object SignUpForm {
    */
   val form = Form(
     mapping(
-      "username" -> nonEmptyText,
+      "username" -> text.verifying(nonEmpty, pattern("^[a-z0-9_-]*$".r)),
       "name" -> nonEmptyText,
       "email" -> email,
       "password" -> nonEmptyText
