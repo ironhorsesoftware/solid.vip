@@ -44,8 +44,10 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAu
   def getProjects(json : JsValue) : List[Project] = {
     val projects =
       (json \ "repositories" \ "nodes").as[JsArray].value.map { repository =>
+        val isContributedTo =  (repository \ "isFork").as[JsBoolean].value
+
         val thumbnailOpt =
-          if ((repository \ "usesCustomOpenGraphImage").as[JsBoolean].value) {
+          if (isContributedTo || (repository \ "usesCustomOpenGraphImage").as[JsBoolean].value) {
             (repository \ "openGraphImageUrl").asOpt[String]
           } else {
             None
@@ -56,7 +58,7 @@ class SolidGitHubProfileParser extends SocialProfileParser[JsValue, Profile, OAu
             description = (repository \ "description").asOpt[String].getOrElse(""),
             link = (repository \ "url").as[String],
             thumbnail = thumbnailOpt,
-            isContributedTo = (repository \ "isFork").as[JsBoolean].value
+            isContributedTo = isContributedTo
         )
       }
 

@@ -30,6 +30,90 @@
     </head>
     <body>
         @profileHeader(profile.name, profile.title, profile.picture, profile.twitterUrl, profile.gitHubUrl)
+        <div class="container sections-wrapper">
+            <div class="row">
+                <div class="primary col-lg-8 col-12">
+                    @about(profile.summary)
+
+@if(!profile.projects.filter(project => project.isContributedTo).isEmpty) {
+
+                    <section class="latest section">
+                        <div class="section-inner">
+                            <h2 class="heading">Contributions</h2>
+                            <div class="content">
+    @for(item <- profile.projects.filter(project => project.isContributedTo)) {
+                                <div class="item row">
+        @item.thumbnail.map { src =>
+                                    <a class="col-md-4 col-12" href="@item.link" target="_blank">
+                                        <img class="img-fluid project-image" src="@src" alt="@item.title" />
+                                    </a>
+        }
+                                    <div class="desc col-md-8 col-12">
+                                        <h3 class="title"><a href="@item.link" target="_blank">@item.title</a></h3>
+                                        <p class="mb-2">@item.description</p>
+                                        <p><a class="more-link" href="@item.link" target="_blank"><i class="fas fa-external-link-alt"></i>Find out more</a></p>
+                                    </div><!--//desc-->                          
+                                </div><!--//item-->
+    }
+                            </div>
+                        </div>
+                    </section>
+}
+@if(!profile.projects.filter(project => !project.isContributedTo).isEmpty) {
+                <section class="projects section">
+                    <div class="section-inner">
+                        <h2 class="heading">Projects</h2>
+                        <div class="content">
+    @for(item <- profile.projects.filter(project => !project.isContributedTo)) {
+                            <div class="item">
+                                <h3 class="title"><a href="@item.link" target="_blank">@item.title</a></h3>
+                                <p class="summary">@item.description</p>
+                                <p><a class="more-link" href="@item.link" target="_blank"><i class="fas fa-external-link-alt"></i>Find out more</a></p>
+                            </div><!--//item-->
+    }
+    @profile.gitHubUrl.map { url =>
+                           <a class="btn btn-cta-secondary" href="@url">More on GitHub <i class="fas fa-chevron-right"></i></a>
+    }
+                        </div>
+                    </div>
+                </section>
+}
+@if(!profile.workExperience.isEmpty) {
+                <section class="experience section">
+                    <div class="section-inner">
+                        <h2 class="heading">Work Experience</h2>
+                        <div class="content">
+    @for(item <- profile.workExperience) {
+                            <div class="item">
+                                <h3 class="title">@item.company - <span class="place">@item.company</span> <span class="year">(@item.startDate - @item.endDate.getOrElse("Present"))</span></h3>
+        @item.description.map { desc =>
+                                <p>@desc</p>
+        }
+                            </div><!--//item-->
+    }
+                        </div><!--//content-->  
+                    </div><!--//section-inner-->                 
+                </section><!--//section-->
+}
+@profile.gitHubUsername.map { ghu =>
+                <section class="github section">
+                    <div class="section-inner">
+                        <h2 class="heading">GitHub</h2>
+                        <p>Here is a graph of my recent GitHub contributions: 
+                        <div id="github-graph" class="github-graph">
+
+                        </div><!--//github-graph-->
+
+                        <p>This is my recent activity stream:        
+                        <div id="ghfeed" class="ghfeed">
+                        </div><!--//ghfeed-->
+                        
+                    </div><!--//secton-inner-->
+                </section><!--//section-->
+}
+            </div>
+        </div>
+
 
         <!-- Javascript -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -42,5 +126,15 @@
         <script type="text/javascript" src="@routes.Assets.versioned("lib/github-activity/github-activity-0.1.5.min.js")"></script>
         <!-- custom js -->
         <script type="text/javascript" src="@routes.Assets.versioned("javascripts/profile.js")"></script>            
+
+@profile.gitHubUsername.map { ghu =>
+		<script type="text/javascript">
+		/* Github Calendar - https://github.com/IonicaBizau/github-calendar */
+	    new GitHubCalendar("#github-graph", "@ghu");
+
+	    /* Github Activity Feed - https://github.com/caseyscarborough/github-activity */
+	    GitHubActivity.feed({ username: "@ghu", selector: "#ghfeed" });
+		</script>
+}
     </body>
 </html>
