@@ -27,8 +27,8 @@
   <logger name="play" level="INFO" />
   <logger name="reactivemongo" level="WARN" />
   <logger name="application" level="DEBUG" />
-  <logger name="controllers.ProfileBuilderController" level="INFO" />
-  <logger name="services" level="INFO" />
+  <logger name="controllers.HomeController" level="INFO" />
+  <logger name="services" level="WARN" />
 
   <root level="INFO">
     <!--<appender-ref ref="ASYNCFILE" />-->
