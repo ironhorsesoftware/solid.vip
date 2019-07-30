@@ -60,58 +60,80 @@
                     </section>
 }
 @if(!profile.projects.filter(project => !project.isContributedTo).isEmpty) {
-                <section class="projects section">
-                    <div class="section-inner">
-                        <h2 class="heading">Projects</h2>
-                        <div class="content">
+                    <section class="projects section">
+                        <div class="section-inner">
+                            <h2 class="heading">Projects</h2>
+                            <div class="content">
     @for(item <- profile.projects.filter(project => !project.isContributedTo)) {
-                            <div class="item">
-                                <h3 class="title"><a href="@item.link" target="_blank">@item.title</a></h3>
-                                <p class="summary">@item.description</p>
-                                <p><a class="more-link" href="@item.link" target="_blank"><i class="fas fa-external-link-alt"></i>Find out more</a></p>
-                            </div><!--//item-->
+                                <div class="item">
+                                    <h3 class="title"><a href="@item.link" target="_blank">@item.title</a></h3>
+                                    <p class="summary">@item.description</p>
+                                    <p><a class="more-link" href="@item.link" target="_blank"><i class="fas fa-external-link-alt"></i>Find out more</a></p>
+                                </div><!--//item-->
     }
     @profile.gitHubUrl.map { url =>
-                           <a class="btn btn-cta-secondary" href="@url">More on GitHub <i class="fas fa-chevron-right"></i></a>
+                                <a class="btn btn-cta-secondary" href="@url">More on GitHub <i class="fas fa-chevron-right"></i></a>
     }
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 }
 @if(!profile.workExperience.isEmpty) {
-                <section class="experience section">
-                    <div class="section-inner">
-                        <h2 class="heading">Work Experience</h2>
-                        <div class="content">
+                    <section class="experience section">
+                        <div class="section-inner">
+                            <h2 class="heading">Work Experience</h2>
+                            <div class="content">
     @for(item <- profile.workExperience) {
-                            <div class="item">
-                                <h3 class="title">@item.company - <span class="place">@item.company</span> <span class="year">(@item.startDate - @item.endDate.getOrElse("Present"))</span></h3>
+                                <div class="item">
+                                    <h3 class="title">@item.company - <span class="place">@item.company</span> <span class="year">(@item.startDate - @item.endDate.getOrElse("Present"))</span></h3>
         @item.description.map { desc =>
-                                <p>@desc</p>
+                                    <p>@desc</p>
         }
-                            </div><!--//item-->
+                                </div><!--//item-->
     }
-                        </div><!--//content-->  
-                    </div><!--//section-inner-->                 
-                </section><!--//section-->
+                            </div><!--//content-->  
+                        </div><!--//section-inner-->                 
+                    </section><!--//section-->
 }
 @profile.gitHubUsername.map { ghu =>
-                <section class="github section">
-                    <div class="section-inner">
-                        <h2 class="heading">GitHub</h2>
-                        <p>Here is a graph of my recent GitHub contributions: 
-                        <div id="github-graph" class="github-graph">
+                    <section class="github section">
+                        <div class="section-inner">
+                            <h2 class="heading">GitHub</h2>
+                            <p>Here is a graph of my recent GitHub contributions: 
+                            <div id="github-graph" class="github-graph">
 
-                        </div><!--//github-graph-->
+                            </div><!--//github-graph-->
 
-                        <p>This is my recent activity stream:        
-                        <div id="ghfeed" class="ghfeed">
-                        </div><!--//ghfeed-->
-                        
-                    </div><!--//secton-inner-->
-                </section><!--//section-->
+                            <p>This is my recent activity stream:        
+                            <div id="ghfeed" class="ghfeed">
+                            </div><!--//ghfeed-->
+                        </div><!--//secton-inner-->
+                    </section><!--//section-->
 }
-            </div>
+                </div>
+                <div class="secondary col-lg-4 col-12">
+@if(profile.location.isDefined || profile.email.isDefined || profile.website.isDefined) {
+                    <aside class="info aside section">
+                        <div class="section-inner">
+                            <h2 class="heading sr-only">Basic Information</h2>
+                            <div class="content">
+                                <ul class="list-unstyled">
+@profile.location.map { location =>
+                                    <li><i class="fas fa-map-marker-alt"></i><span class="sr-only">Location: </span>@location</li>
+}
+@profile.email.map { email =>
+                                    <li><i class="fas fa-envelope"></i><span class="sr-only">Email: </span><a href="mailto:@email">@email</a></li>
+}
+@profile.website.map { website =>
+                                    <li><i class="fas fa-link"></i><span class="sr-only">Website: </span><a href="@website">@website</a></li>
+}
+                                </ul>
+                            </div><!--//content-->  
+                        </div><!--//section-inner-->
+                    </aside><!--//aside-->
+}
+                </div><!--//secondary-->
+            </div><!--//row-->
         </div>
 
 
