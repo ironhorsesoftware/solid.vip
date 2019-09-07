@@ -101,8 +101,8 @@ class ProfileBuilderController @Inject()
     var gitHubUrlOptions = ListBuffer(noneOption)
     var gitHubUsernameOptions = ListBuffer(noneOption)
     var nameOptions : ListBuffer[(String, String)] = ListBuffer()
-    var projectOptions : ListBuffer[(String, String)] = ListBuffer()
-    var workExperienceOptions : ListBuffer[(String, String)] = ListBuffer()
+    var projectOptions : MutableMap[String, String] = MutableMap()
+    var workExperienceOptions : MutableMap[String, String] = MutableMap()
 
     profile.projects.foreach(project => addProject(projectOptions, project))
     profile.workExperience.foreach(workExperience => addWorkExperience(workExperienceOptions, workExperience))
@@ -145,8 +145,8 @@ class ProfileBuilderController @Inject()
     mutableMap += ("twitterUrl" -> twitterUrlOptions.reverse.toList)
     mutableMap += ("gitHubUrl" -> gitHubUrlOptions.reverse.toList)
     mutableMap += ("gitHubUsername" -> gitHubUsernameOptions.reverse.toList)
-    mutableMap += ("projects" -> projectOptions.toList)
-    mutableMap += ("workExperience" -> workExperienceOptions.toList)
+    mutableMap += ("projects" -> projectOptions.toList.sortWith(sortByName))
+    mutableMap += ("workExperience" -> workExperienceOptions.toList.sortWith(sortByName))
 
     mutableMap.toMap
   }
@@ -155,11 +155,15 @@ class ProfileBuilderController @Inject()
     itemOpt.foreach(item => list += (item -> item))
   }
 
-  def addProject(list : ListBuffer[(String, String)], project : Project) {
-    list += (Json.toJson(project).toString -> project.title)
+  def addProject(projects : MutableMap[String, String], project : Project) {
+    projects += (Json.toJson(project).toString -> project.title)
   }
 
-  def addWorkExperience(list : ListBuffer[(String, String)], workExperience : WorkExperience) {
-    list += (Json.toJson(workExperience).toString -> workExperience.company)
+  def addWorkExperience(experiences : MutableMap[String, String], workExperience : WorkExperience) {
+    experiences += (Json.toJson(workExperience).toString -> workExperience.company)
+  }
+
+  def sortByName(project1 : (String, String), project2 : (String, String)) = {
+    project1._2 < project2._2
   }
 }
