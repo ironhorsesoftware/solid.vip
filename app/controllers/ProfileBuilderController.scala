@@ -89,18 +89,17 @@ class ProfileBuilderController @Inject()
   }
 
   def buildOptions(profile : Profile, alternate : Option[Profile]) : Map[String, List[(String, String)]] = {
-    val noneOption = ("None" -> "None")
 
-    var pictureOptions = ListBuffer(noneOption)
-    var titleOptions = ListBuffer(noneOption)
-    var summaryOptions = ListBuffer(noneOption)
-    var locationOptions = ListBuffer(noneOption)
-    var emailOptions = ListBuffer(noneOption)
-    var websiteOptions = ListBuffer(noneOption)
-    var twitterUrlOptions = ListBuffer(noneOption) 
-    var gitHubUrlOptions = ListBuffer(noneOption)
-    var gitHubUsernameOptions = ListBuffer(noneOption)
-    var nameOptions : ListBuffer[(String, String)] = ListBuffer()
+    var pictureOptions : MutableMap[String, String] = MutableMap()
+    var titleOptions : MutableMap[String, String] = MutableMap()
+    var summaryOptions : MutableMap[String, String] = MutableMap()
+    var locationOptions : MutableMap[String, String] = MutableMap()
+    var emailOptions : MutableMap[String, String] = MutableMap()
+    var websiteOptions : MutableMap[String, String] = MutableMap()
+    var twitterUrlOptions : MutableMap[String, String] = MutableMap() 
+    var gitHubUrlOptions : MutableMap[String, String] = MutableMap()
+    var gitHubUsernameOptions : MutableMap[String, String] = MutableMap()
+    var nameOptions : MutableMap[String, String] = MutableMap()
     var projectOptions : MutableMap[String, String] = MutableMap()
     var workExperienceOptions : MutableMap[String, String] = MutableMap()
 
@@ -135,24 +134,24 @@ class ProfileBuilderController @Inject()
     addOption(gitHubUsernameOptions, profile.gitHubUsername)
 
     var mutableMap = MutableMap[String, List[(String, String)]]()
-    mutableMap += ("name" -> nameOptions.reverse.toList)
-    mutableMap += ("picture" -> pictureOptions.reverse.toList)
-    mutableMap += ("title" -> titleOptions.reverse.toList)
-    mutableMap += ("summary" -> summaryOptions.reverse.toList)
-    mutableMap += ("location" -> locationOptions.reverse.toList)
-    mutableMap += ("email" -> emailOptions.reverse.toList)
-    mutableMap += ("website" -> websiteOptions.reverse.toList)
-    mutableMap += ("twitterUrl" -> twitterUrlOptions.reverse.toList)
-    mutableMap += ("gitHubUrl" -> gitHubUrlOptions.reverse.toList)
-    mutableMap += ("gitHubUsername" -> gitHubUsernameOptions.reverse.toList)
+    mutableMap += ("name" -> addNoneOption(nameOptions.toList.sortWith(sortByName)))
+    mutableMap += ("picture" -> addNoneOption(pictureOptions.toList.sortWith(sortByName)))
+    mutableMap += ("title" -> addNoneOption(titleOptions.toList.sortWith(sortByName)))
+    mutableMap += ("summary" -> addNoneOption(summaryOptions.toList.sortWith(sortByName)))
+    mutableMap += ("location" -> addNoneOption(locationOptions.toList.sortWith(sortByName)))
+    mutableMap += ("email" -> addNoneOption(emailOptions.toList.sortWith(sortByName)))
+    mutableMap += ("website" -> addNoneOption(websiteOptions.toList.sortWith(sortByName)))
+    mutableMap += ("twitterUrl" -> addNoneOption(twitterUrlOptions.toList.sortWith(sortByName)))
+    mutableMap += ("gitHubUrl" -> addNoneOption(gitHubUrlOptions.toList.sortWith(sortByName)))
+    mutableMap += ("gitHubUsername" -> addNoneOption(gitHubUsernameOptions.toList.sortWith(sortByName)))
     mutableMap += ("projects" -> projectOptions.toList.sortWith(sortByName))
     mutableMap += ("workExperience" -> workExperienceOptions.toList.sortWith(sortByName))
 
     mutableMap.toMap
   }
 
-  def addOption(list : ListBuffer[(String, String)], itemOpt : Option[String]) {
-    itemOpt.foreach(item => list += (item -> item))
+  def addOption(options : MutableMap[String, String], itemOpt : Option[String]) {
+    itemOpt.foreach(item => options += (item -> item))
   }
 
   def addProject(projects : MutableMap[String, String], project : Project) {
@@ -165,5 +164,9 @@ class ProfileBuilderController @Inject()
 
   def sortByName(project1 : (String, String), project2 : (String, String)) = {
     project1._2 < project2._2
+  }
+
+  def addNoneOption(options : List[(String, String)]) = {
+    options :+ ("None" -> "None")
   }
 }
