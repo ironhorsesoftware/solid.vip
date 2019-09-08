@@ -41,7 +41,7 @@
                         <div class="section-inner">
                             <h2 class="heading">Contributions</h2>
                             <div class="content">
-    @for(item <- profile.projects.filter(project => project.isContributedTo)) {
+    @for(item <- profile.projects.filter(project => project.isContributedTo).sortWith(_.title < _.title)) {
                                 <div class="item row">
         @item.thumbnail.map { src =>
                                     <a class="col-md-4 col-12" href="@item.link" target="_blank">
@@ -64,7 +64,7 @@
                         <div class="section-inner">
                             <h2 class="heading">Projects</h2>
                             <div class="content">
-    @for(item <- profile.projects.filter(project => !project.isContributedTo)) {
+    @for(item <- profile.projects.filter(project => !project.isContributedTo).sortWith(_.title < _.title)) {
                                 <div class="item">
                                     <h3 class="title"><a href="@item.link" target="_blank">@item.title</a></h3>
                                     <p class="summary">@item.description</p>
@@ -83,7 +83,7 @@
                         <div class="section-inner">
                             <h2 class="heading">Work Experience</h2>
                             <div class="content">
-    @for(item <- profile.workExperience) {
+    @for(item <- profile.workExperience.sorted) {
                                 <div class="item">
                                     <h3 class="title">@item.company - <span class="place">@item.company</span> <span class="year">(@item.startDate - @item.endDate.getOrElse("Present"))</span></h3>
         @item.description.map { desc =>

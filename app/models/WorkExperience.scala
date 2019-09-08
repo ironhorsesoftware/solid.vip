@@ -8,7 +8,45 @@ case class WorkExperience (
     startDate : String,
     endDate : Option[String],
     description : Option[String]
-)
+) extends Ordered[WorkExperience] {
+
+  def compare (that : WorkExperience) = {
+
+    var comparison = compareEndDates(that)
+
+    if (comparison == 0) {
+      comparison = startDate.compare(that.startDate)
+    }
+
+    if (comparison == 0) {
+      comparison = company.compare(that.company)
+    }
+
+    if (comparison == 0) {
+      comparison = title.compare(that.title)
+    }
+
+    comparison
+  }
+
+  def compareEndDates(that : WorkExperience) = {
+    val thisEndDateIsDefined = endDate.isDefined
+    val thatEndDateIsDefined = that.endDate.isDefined
+
+    if (thisEndDateIsDefined && !thatEndDateIsDefined) {
+      1
+
+    } else if (!thisEndDateIsDefined && thatEndDateIsDefined) {
+      -1
+
+    } else if (!thisEndDateIsDefined && !thatEndDateIsDefined) {
+      0
+
+    } else {
+      this.endDate.get.compare(that.endDate.get)
+    }
+  }
+}
 
 object WorkExperience {
   implicit val workExperienceReads = Json.reads[WorkExperience]
