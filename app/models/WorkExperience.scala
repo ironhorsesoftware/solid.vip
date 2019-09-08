@@ -43,7 +43,8 @@ case class WorkExperience (
       0
 
     } else {
-      this.endDate.get.compare(that.endDate.get)
+      // End dates should be sorted in reverse order.
+      that.endDate.get.compare(this.endDate.get)
     }
   }
 }
