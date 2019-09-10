@@ -36,17 +36,15 @@ case class Profile (
 
     val NAMESPACE = profile.createResource(NS)
     val PERSON = profile.createResource(NS + "Person")
-    val CONTACT_POINT = profile.createResource(NS + "ContactPoint")
+    val PLACE = profile.createResource(NS + "Place")
     val WEBSITE = profile.createResource(NS + "WebSite")
     val SOFTWARE_SOURCE_CODE = profile.createResource(NS + "SoftwareSourceCode")
     val ORGANIZATION = profile.createResource(NS + "Organization")
 
     val NAME = profile.createProperty(NS + "name")
-    val PHOTO = profile.createProperty(NS + "photo")
     val JOB_TITLE = profile.createProperty(NS + "jobTitle")
     val DESCRIPTION = profile.createProperty(NS + "description")
     val HOME_LOCATION = profile.createProperty(NS + "homeLocation")
-    val AREA_SERVED = profile.createProperty(NS + "areaServed")
     val EMAIL = profile.createProperty(NS + "email")
     val AUTHOR = profile.createProperty(NS + "author")
     val URL = profile.createProperty(NS + "url")
@@ -58,8 +56,8 @@ case class Profile (
     val person = profile.createResource(webIdUri, PERSON)
     person.addProperty(NAME, name)
 
-    picture map { photo =>
-      person.addProperty(PHOTO, photo)
+    picture map { image =>
+      person.addProperty(IMAGE, image)
     }
 
     title map { jobTitle =>
@@ -70,10 +68,10 @@ case class Profile (
       person.addProperty(DESCRIPTION, description)      
     }
 
-    location map { areaServed =>
-      val contactPoint = profile.createResource(CONTACT_POINT)
-      contactPoint.addProperty(AREA_SERVED, areaServed)
-      person.addProperty(HOME_LOCATION, contactPoint)
+    location map { name =>
+      val place = profile.createResource(PLACE)
+      place.addProperty(NAME, name)
+      person.addProperty(HOME_LOCATION, place)
     }
 
     email map { em =>
