@@ -27,8 +27,8 @@ class DeleteAccountController @Inject()(
     val memberDao : MemberDAO,
     val profileDao : ProfileDAO)(implicit ex : ExecutionContext) extends AbstractController(cc) with I18nSupport with Logging {
 
-  def view = silhouette.SecuredAction(WithProvider[InteractiveEnv#A](CredentialsProvider.ID)).async { implicit request: SecuredRequest[InteractiveEnv, AnyContent] =>
-    Future.successful(Ok(""))
+  def view = silhouette.SecuredAction(WithProvider[InteractiveEnv#A](CredentialsProvider.ID)) { implicit request: SecuredRequest[InteractiveEnv, AnyContent] =>
+    Ok(views.html.deleteAccount(request.identity))
   }
 
   def delete = silhouette.SecuredAction(WithProvider[InteractiveEnv#A](CredentialsProvider.ID)).async { implicit request: SecuredRequest[InteractiveEnv, AnyContent] =>
