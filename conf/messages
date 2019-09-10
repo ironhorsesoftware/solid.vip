@@ -33,6 +33,7 @@ email = Email
 password = Password
 send = Send
 change = Change
+delete = Delete
 reset = Reset
 sign.up = Sign up
 sign.in = Sign in
