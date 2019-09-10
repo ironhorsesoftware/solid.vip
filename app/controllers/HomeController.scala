@@ -7,7 +7,7 @@ import scala.concurrent.{Future, ExecutionContext}
 
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.libs.mailer.{ Email, MailerClient, AttachmentFile }
+import play.api.libs.mailer.{ Email, MailerClient }
 import play.api.mvc._
 
 import com.mohiva.play.silhouette.api.{Silhouette, LoginInfo}
