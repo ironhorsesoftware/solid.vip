@@ -38,4 +38,6 @@ trait MemberService extends IdentityService[Member] {
    * @return The user for whom the profile was saved.
    */
   def save(profile: CommonSocialProfile): Future[Member]
+
+  def delete(user: Member) : Future[Unit]
 }

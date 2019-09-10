@@ -11,8 +11,9 @@
 @main(messages("delete.account.title"), Some(member)) {
     <fieldset class="col-md-6 offset-md-3">
         <legend>@messages("delete.account")</legend>
-        @helper.form(action = controllers.routes.DeletePasswordController.delete) {
+        @helper.form(action = controllers.routes.DeleteAccountController.delete) {
             @helper.CSRF.formField
+            <p class="info">@messages("action.undoable")</p>
             <div class="form-group">
                 <div>
                     <button id="submit" type="submit" value="submit" class="btn btn-lg btn-danger btn-block">@messages("delete")</button>

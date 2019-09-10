@@ -7,7 +7,7 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
 
 import models.Member
-import daos.MemberDAO
+import daos.{MemberDAO, CredentialsDAO}
 
 import play.api.Logging
 
@@ -19,7 +19,7 @@ import scala.concurrent.{ ExecutionContext, Future }
  * @param userDAO The user DAO implementation.
  * @param ex      The execution context.
  */
-class MemberServiceImpl @Inject() (memberDAO: MemberDAO)(implicit ex: ExecutionContext) extends MemberService with Logging {
+class MemberServiceImpl @Inject() (memberDAO: MemberDAO, credentialsDao : CredentialsDAO)(implicit ex: ExecutionContext) extends MemberService with Logging {
 
   /**
    * Retrieves a user that matches the specified ID.
@@ -87,6 +87,12 @@ class MemberServiceImpl @Inject() (memberDAO: MemberDAO)(implicit ex: ExecutionC
         } yield {
           member
         }
+    }
+  }
+
+  def delete(member: Member) = {
+    credentialsDao.remove(member.loginInfo).flatMap { r =>
+      memberDAO.delete(member.id)
     }
   }
 }
