@@ -13,6 +13,7 @@ forgot.password.title = Solid.VIP - Forgot Password
 reset.password.title = Solid.VIP - Reset Password
 change.password.title = Solid.VIP - Change Password
 activate.account.title = Solid.VIP - Activate Account
+delete.account.title = Solid.VIP - Delete Account
 
 toggle.navigation = Toggle navigation
 welcome.signed.in = Welcome, you are now signed in!
@@ -45,6 +46,7 @@ forgot.password = Forgot password
 reset.password = Reset password
 change.password = Change password
 activate.account = Activate Account
+delete.account = Delete Account
 current.password = Current password
 new.password = New password
 

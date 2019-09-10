@@ -4,4 +4,11 @@
 @import play.twirl.api.Html
 @import controllers.AssetsFinder
 
-@(param: Any)
+@(member : models.Member)(implicit header: RequestHeader, flash : Flash, messages : Messages)
+
+
+@main(messages("delete.account.title")) {
+    <fieldset class="col-md-6 offset-md-3">
+        <legend>@messages("delete.account")</legend>
+    </fieldset>
+}
