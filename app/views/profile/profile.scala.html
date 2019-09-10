@@ -30,7 +30,7 @@
     </head>
     <body>
 		<script type="application/ld+json">
-		@profile.toJsonLd
+		@Html(@profile.toJsonLd)
 		</script>
 
         @profileHeader(profile.name, profile.title, profile.picture, profile.twitterUrl, profile.gitHubUrl)
