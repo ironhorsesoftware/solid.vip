@@ -7,7 +7,7 @@
 @(member : models.Member)(implicit header: RequestHeader, flash : Flash, messages : Messages)
 
 
-@main(messages("delete.account.title")) {
+@main(messages("delete.account.title"), Some(member)) {
     <fieldset class="col-md-6 offset-md-3">
         <legend>@messages("delete.account")</legend>
     </fieldset>
