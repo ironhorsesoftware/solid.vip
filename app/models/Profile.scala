@@ -28,7 +28,7 @@ case class Profile (
     projects : List[Project],
     workExperience : List[WorkExperience]) extends SocialProfile {
 
-  def toJsonLd : String = {
+  def toModel : Model = {
     val webIdUri = "http://" + loginInfo.providerID + ".solid.vip/#i"
     val NS = "http://schema.org/"
 
@@ -38,6 +38,8 @@ case class Profile (
     val PERSON = profile.createResource(NS + "Person")
     val CONTACT_POINT = profile.createResource(NS + "ContactPoint")
     val WEBSITE = profile.createResource(NS + "WebSite")
+    val SOFTWARE_SOURCE_CODE = profile.createResource(NS + "SoftwareSourceCode")
+    val ORGANIZATION = profile.createResource(NS + "Organization")
 
     val NAME = profile.createProperty(NS + "name")
     val PHOTO = profile.createProperty(NS + "photo")
@@ -49,6 +51,9 @@ case class Profile (
     val AUTHOR = profile.createProperty(NS + "author")
     val URL = profile.createProperty(NS + "url")
     val SAME_AS = profile.createProperty(NS + "sameAs")
+    val IMAGE = profile.createProperty(NS + "image")
+    val CONTRIBUTOR = profile.createProperty(NS + "contributor")
+    val WORKS_FOR = profile.createProperty(NS + "worksFor")
 
     val person = profile.createResource(webIdUri, PERSON)
     person.addProperty(NAME, name)
@@ -90,20 +95,44 @@ case class Profile (
       person.addProperty(SAME_AS, gh)
     }
 
-    gitHubUsername map { ghu =>
-      
+    projects map { project =>
+      val softwareSourceCode = profile.createResource(project.link, SOFTWARE_SOURCE_CODE)
+      softwareSourceCode.addProperty(URL, project.link)
+      softwareSourceCode.addProperty(NAME, project.title)
+      softwareSourceCode.addProperty(DESCRIPTION, project.description)
+
+      project.thumbnail.map { image =>
+        softwareSourceCode.addProperty(IMAGE, image)
+      }
+
+      if (project.isContributedTo) {
+        softwareSourceCode.addProperty(CONTRIBUTOR, person)
+
+      } else {
+        softwareSourceCode.addProperty(AUTHOR, person)
+      }
     }
 
-    projects map { proj =>
-      
+    workExperience.filter(_.endDate.isEmpty).map { worksFor =>
+      val organization = profile.createResource(ORGANIZATION)
+      organization.addProperty(NAME, worksFor.company)
+
+      person.addProperty(WORKS_FOR, organization)
+      person.addProperty(JOB_TITLE, worksFor.title)
     }
 
-    workExperience map { we =>
-      
-    }
+    profile
+  }
 
+  def toJsonLd = {
     val writer = new StringWriter()
-    profile.write(writer, RDFLanguages.JSONLD.getName)
+    toModel.write(writer, RDFLanguages.JSONLD.getName)
+    writer.toString
+  }
+
+  def toTtl = {
+    val writer = new StringWriter()
+    toModel.write(writer, RDFLanguages.TURTLE.getName)
     writer.toString
   }
 }

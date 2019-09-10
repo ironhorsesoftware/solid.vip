@@ -29,6 +29,10 @@
         <link id="theme-style" rel="stylesheet" href="@routes.Assets.versioned("stylesheets/profile.css")">
     </head>
     <body>
+		<script type="application/ld+json">
+		@profile.toJsonLd
+		</script>
+
         @profileHeader(profile.name, profile.title, profile.picture, profile.twitterUrl, profile.gitHubUrl)
         <div class="container sections-wrapper">
             <div class="row">
