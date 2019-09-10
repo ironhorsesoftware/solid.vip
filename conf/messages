@@ -81,6 +81,7 @@ yahoo = Yahoo
 profile.builder.link = Build Profile
 profile.builder.social = Import your profile from the following services:
 update.profile = Update Profile
+profile.export = Export Profile
 
 ##########
 # Emails
