@@ -52,9 +52,17 @@ case class Profile (
     val IMAGE = profile.createProperty(NS + "image")
     val CONTRIBUTOR = profile.createProperty(NS + "contributor")
     val WORKS_FOR = profile.createProperty(NS + "worksFor")
+    val ABOUT = profile.createProperty(NS + "about")
+    val SUBJECT_OF = profile.createProperty(NS + "subjectOf")
 
     val person = profile.createResource(webIdUri, PERSON)
     person.addProperty(NAME, name)
+
+    val solidVipSite = profile.createResource(WEBSITE)
+    solidVipSite.addProperty(URL, "http://" + loginInfo.providerKey + ".solid.vip/")
+    solidVipSite.addProperty(ABOUT, webIdUri)
+
+    person.addProperty(SUBJECT_OF, solidVipSite)
 
     picture map { image =>
       person.addProperty(IMAGE, image)
