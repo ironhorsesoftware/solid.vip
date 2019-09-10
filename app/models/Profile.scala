@@ -29,7 +29,7 @@ case class Profile (
     workExperience : List[WorkExperience]) extends SocialProfile {
 
   def toModel : Model = {
-    val webIdUri = "http://" + loginInfo.providerID + ".solid.vip/#i"
+    val webIdUri = "http://" + loginInfo.providerKey + ".solid.vip/#i"
     val NS = "http://schema.org/"
 
     val profile = ModelFactory.createDefaultModel();
@@ -58,10 +58,6 @@ case class Profile (
 
     picture map { image =>
       person.addProperty(IMAGE, image)
-    }
-
-    title map { jobTitle =>
-      person.addProperty(JOB_TITLE, jobTitle)
     }
 
     summary map { description =>
