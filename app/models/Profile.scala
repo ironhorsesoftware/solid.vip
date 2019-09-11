@@ -28,11 +28,11 @@ case class Profile (
     projects : List[Project],
     workExperience : List[WorkExperience]) extends SocialProfile {
 
-  def toModel : Model = {
-    val webIdUri = "http://" + loginInfo.providerKey + ".solid.vip/#i"
+  def toModel(webIdUri : String) : Model = {
     val NS = "http://schema.org/"
 
     val profile = ModelFactory.createDefaultModel();
+    profile.setNsPrefix("schem", NS)
 
     val NAMESPACE = profile.createResource(NS)
     val PERSON = profile.createResource(NS + "Person")
@@ -128,13 +128,13 @@ case class Profile (
 
   def toJsonLd = {
     val writer = new StringWriter()
-    toModel.write(writer, RDFLanguages.JSONLD.getName)
+    toModel("http://" + loginInfo.providerKey + ".solid.vip/#i").write(writer, RDFLanguages.JSONLD.getName)
     writer.toString
   }
 
   def toTtl = {
     val writer = new StringWriter()
-    toModel.write(writer, RDFLanguages.TURTLE.getName)
+    toModel("http://" + loginInfo.providerKey + ".solid.vip/#i").write(writer, RDFLanguages.TURTLE.getName)
     writer.toString
   }
 }
