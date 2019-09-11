@@ -18,26 +18,32 @@ solid.auth.trackSession(session => {
   }
 });
 
-$('#view').click(async function loadProfile() {
+$('#update').click(async function loadProfile() {
   // Set up a local data store and associated data fetcher
   const store = $rdf.graph();
   const fetcher = new $rdf.Fetcher(store);
+  const updater = new $rdf.UpdateManager(store);
 
   // Load the person's data into the store
   const person = $('#profile').val();
   await fetcher.load(person);
+  var me = store.sym(person);
 
-  // Display their details
-  const fullName = store.any($rdf.sym(person), FOAF('name'));
-  $('#fullName').text(fullName && fullName.value);
+  // Update the card with the Solid.VIP profile.
+  const svpTtl = $('#solidVipProfile').val();
+  const svpStore = $rdf.graph();
 
-  const svp = $('#solidVipProfile').val();
-  console.log("Solid.VIP Profile: ", svp);
+  $rdf.parse(svpTtl, svpStore, person, 'text/turtle');
 
-  $rdf.parse(svp, store, person, 'text/turtle');
-
-  let triples = store.match(undefined, undefined, undefined);
+  // Save the profile back to the WebID Profile.
+  let triples = svpStore.match(undefined, undefined, undefined);
   for (var i = 0; i < triples.length; i++) {
-	  console.log("Triple: ", triples[i]);
+	  console.log("Triple to update: ", i, triples[i]);
+
+	  let ins = $rdf.st(triples[i].subject, triples[i].predicate, triples[i].object, me.doc());
+	  let del = store.statementsMatching(triples[i].subject, triples[i].predicate, null, me.doc()) || [];
+	  updater.update(del, ins, (uri, ok, message, response) => {
+		  console.log("i", i, "uri", uri, "ok", ok, "message", message, "response", response);
+	  });
   }
 });
