@@ -33,6 +33,7 @@ case class Profile (
 
     val profile = ModelFactory.createDefaultModel();
     profile.setNsPrefix("schem", NS)
+    profile.setNsPrefix("", webIdUri.split("#")(0))
 
     val NAMESPACE = profile.createResource(NS)
     val PERSON = profile.createResource(NS + "Person")
