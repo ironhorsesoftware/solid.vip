@@ -33,7 +33,6 @@ case class Profile (
 
     val profile = ModelFactory.createDefaultModel();
     profile.setNsPrefix("schem", NS)
-    profile.setNsPrefix("", webIdUri.split("#")(0))
 
     val NAMESPACE = profile.createResource(NS)
     val PERSON = profile.createResource(NS + "Person")
@@ -134,8 +133,11 @@ case class Profile (
   }
 
   def toTtl = {
+    val profile = toModel("#me")
+    profile.setNsPrefix("", "#")
+
     val writer = new StringWriter()
-    toModel("http://" + loginInfo.providerKey + ".solid.vip/#i").write(writer, RDFLanguages.TURTLE.getName)
+    profile.write(writer, RDFLanguages.TURTLE.getName)
     writer.toString
   }
 }
