@@ -13,6 +13,7 @@ import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 
 import daos.ProfileDAO
+import models.Profile
 import modules.InteractiveEnv
 import utils.WithProvider
 
@@ -26,7 +27,7 @@ class ExportProfileController @Inject()(
       profileDao.retrieve(request.identity.loginInfo) map { profileOpt =>
         profileOpt match {
           case Some(profile) => Ok(views.html.exportProfile(request.identity, profile.toTtl))
-          case None => Redirect("https://solid.vip")
+          case None => Ok(views.html.exportProfile(request.identity, Profile(request.identity).toTtl))
         }
       }
     }
