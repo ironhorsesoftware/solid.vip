@@ -25,7 +25,7 @@ class ExportProfileController @Inject()(
     def view = silhouette.SecuredAction(WithProvider[InteractiveEnv#A](CredentialsProvider.ID)).async { implicit request: SecuredRequest[InteractiveEnv, AnyContent] =>
       profileDao.retrieve(request.identity.loginInfo) map { profileOpt =>
         profileOpt match {
-          case Some(profile) => Ok(profile.toTtl)
+          case Some(profile) => Ok(views.html.exportProfile(request.identity, profile.toTtl))
           case None => Redirect("https://solid.vip")
         }
       }

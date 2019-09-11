@@ -9,7 +9,7 @@
 @implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-12", "col-md-12") }
 
 @main(messages("export.profile.title"), Some(member)) {
-  <h1>Profile viewer</h1>
+  <h1>Solid Profile</h1>
   <p id="login">
     You are not logged in.
     <button>Log in</button>
@@ -27,6 +27,10 @@
     <dt>Full name</dt>
     <dd id="fullName"></dd>
   </dl>
+
+  <h1>Solid.VIP Profile</h1>
+  <textarea>@profileTtl</textarea>
+
   <script src="javascripts/solid-auth-client.bundle.js"></script>
   <script src="javascripts/rdflib.min.js"></script>
   <script src="javascripts/solid.js"></script>
