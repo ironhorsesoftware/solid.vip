@@ -132,3 +132,17 @@ meter[value="4"]::-moz-meter-bar { background: green; }
 meter::-webkit-meter-optimum-value {
     transition: width .4s ease-out;
 }
+
+#profile {
+  width: 400px;
+}
+
+dt {
+  font-weight: bold;
+  clear: left;
+  float: left;
+}
+dt:after {
+  content: ': ';
+}
+

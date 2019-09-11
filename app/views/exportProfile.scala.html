@@ -4,9 +4,30 @@
 @import play.twirl.api.Html
 @import controllers.AssetsFinder
 
-@(member : models.Member)(implicit header: RequestHeader, flash : Flash, messages : Messages)
+@(member : models.Member, profileTtl : String)(implicit header: RequestHeader, flash : Flash, messages : Messages)
 
 @implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-12", "col-md-12") }
 
 @main(messages("export.profile.title"), Some(member)) {
+  <h1>Profile viewer</h1>
+  <p id="login">
+    You are not logged in.
+    <button>Log in</button>
+  </p>
+  <p id="logout">
+    You are logged in as <span id="user"></span>.
+    <button>Log out</button>
+  </p>
+  <p>
+    <label for="profile">Profile:</label>
+    <input id="profile">
+    <button id="view">View</button>
+  </p>
+  <dl id="viewer">
+    <dt>Full name</dt>
+    <dd id="fullName"></dd>
+  </dl>
+  <script src="javascripts/solid-auth-client.bundle.js"></script>
+  <script src="javascripts/rdflib.min.js"></script>
+  <script src="javascripts/solid.js"></script>
 }
