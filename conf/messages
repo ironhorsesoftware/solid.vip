@@ -14,6 +14,7 @@ reset.password.title = Solid.VIP - Reset Password
 change.password.title = Solid.VIP - Change Password
 activate.account.title = Solid.VIP - Activate Account
 delete.account.title = Solid.VIP - Delete Account
+export.profile.title = Solid.VIP - Export Profile
 
 toggle.navigation = Toggle navigation
 welcome.signed.in = Welcome, you are now signed in!
