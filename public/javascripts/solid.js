@@ -1,7 +1,7 @@
 const FOAF = $rdf.Namespace('http://xmlns.com/foaf/0.1/');
 
 // Log the user in and out on click
-const popupUri = 'assets/html/solid_popup.html';
+const popupUri = '/assets/html/solid_popup.html';
 $('#login  button').click(() => solid.auth.popupLogin({ popupUri }));
 $('#logout button').click(() => solid.auth.logout());
 
