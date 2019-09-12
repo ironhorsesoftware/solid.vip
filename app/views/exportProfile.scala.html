@@ -8,26 +8,50 @@
 
 @implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-12", "col-md-12") }
 
-@main(messages("export.profile.title"), Some(member)) {
-  <h1>Solid Profile</h1>
-  <p id="login">
-    You are not logged in.
-    <button>Log in</button>
-  </p>
-  <p id="logout">
-    You are logged in as <span id="user"></span>.
-    <button>Log out</button>
-  </p>
-  <p>
-    <label for="profile">Profile:</label>
-    <input id="profile">
-    <button id="update">Update</button>
-  </p>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Profile Builder</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
 
-  <textarea id="solidVipProfile" rows="25" cols="100">@profileTtl</textarea>
+        <!-- Google Fonts -->
+        <link href="//fonts.googleapis.com/css?family=Roboto|Montserrat:400,700|Open+Sans:400,300,600" rel="stylesheet">
+        <link href="//cdnjs.cloudflare.com/ajax/libs/ionicons/1.5.2/css/ionicons.min.css" rel="stylesheet">
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="@routes.Assets.versioned("javascripts/solid-auth-client.bundle.js")"></script>
-  <script src="@routes.Assets.versioned("javascripts/rdflib.min.js")"></script>
-  <script src="@routes.Assets.versioned("javascripts/solid.js")"></script>
-}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/silhouette.css")">
+    </head>
+    <body>
+        @navbar(Some(member))
+
+        <main class="container">
+          <h1>Export Profile to Solid</h1>
+          <p id="login">
+            You are not logged in.
+            <button>Log in</button>
+          </p>
+          <p id="logout">
+            You are logged in as <span id="user"></span>.
+            <button>Log out</button>
+          </p>
+          <p>
+            <label for="profile">Profile:</label>
+            <input id="profile">
+            <button id="update">Update</button>
+          </p>
+
+          <textarea id="solidVipProfile" rows="25" cols="100">@profileTtl</textarea>
+
+          <p id="solid-update-response"></p>
+        </main>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="@routes.Assets.versioned("javascripts/solid-auth-client.bundle.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/rdflib.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/solid.js")"></script>
+    </body>
+</html>

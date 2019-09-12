@@ -37,13 +37,20 @@ $('#update').click(async function loadProfile() {
 
   // Save the profile back to the WebID Profile.
   let triples = svpStore.match(undefined, undefined, undefined);
+  let inserts = [];
+  let deletes = [];
+
   for (var i = 0; i < triples.length; i++) {
 	  console.log("Triple to update: ", i, triples[i]);
 
-	  let ins = $rdf.st(triples[i].subject, triples[i].predicate, triples[i].object, me.doc());
-	  let del = store.statementsMatching(triples[i].subject, triples[i].predicate, null, me.doc()) || [];
-	  updater.update(del, ins, (uri, ok, message, response) => {
-		  console.log("i", i, "uri", uri, "ok", ok, "message", message, "response", response);
-	  });
+	  inserts.push($rdf.st(triples[i].subject, triples[i].predicate, triples[i].object, me.doc()));
+    deletes = deletes.concat(store.statementsMatching(triples[i].subject, triples[i].predicate, null, me.doc()) || []);
   }
+
+  console.log("Inserting ", (inserts || []).length, " items and deleting ", (deletes || []).length, "items");
+
+  updater.update(deletes, inserts, (uri, ok, message, response) => {
+    console.log("uri", uri, "ok", ok, "message", message, "response", response);
+    $("#solid-update-response").text(message);
+  });
 });

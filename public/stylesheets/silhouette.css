@@ -137,12 +137,3 @@ meter::-webkit-meter-optimum-value {
   width: 400px;
 }
 
-dt {
-  font-weight: bold;
-  clear: left;
-  float: left;
-}
-dt:after {
-  content: ': ';
-}
-
