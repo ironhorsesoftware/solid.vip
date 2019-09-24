@@ -40,7 +40,7 @@ libraryDependencies ++= Seq(
     "com.typesafe.play"   %% "play-slick-evolutions"           % playSlickVersion,
     "com.iheart"          %% "ficus"                           % "1.4.3",
     "net.codingwell"      %% "scala-guice"                     % "4.1.0",
-    "com.adrianhurt"      %% "play-bootstrap"                  % "1.5-P27-B4-RC-SNAPSHOT",
+    "com.adrianhurt"      %% "play-bootstrap"                  % "1.5.1-P27-B4",
     "org.postgresql"       % "postgresql"                      % "42.2.5",
     "org.bouncycastle"     % "bcprov-jdk15on"                  % bouncyCastleVersion,
     guice,
