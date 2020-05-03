@@ -16,6 +16,7 @@ import daos.CredentialsDAO
 import models.Credentials
 
 class SlickCredentialsDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec : ExecutionContext) extends CredentialsDAO {
+  val classTag = scala.reflect.classTag[PasswordInfo]
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._

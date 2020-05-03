@@ -8,8 +8,8 @@ import com.google.inject.name.Named
 import com.google.inject.{ AbstractModule, Provides }
 import com.mohiva.play.silhouette.api.{ Env, Environment, EventBus, Silhouette, SilhouetteProvider }
 import com.mohiva.play.silhouette.api.crypto.{Signer, Crypter, CrypterAuthenticatorEncoder}
-import com.mohiva.play.silhouette.api.services.{AuthenticatorService}
-import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
+import com.mohiva.play.silhouette.api.services.AuthenticatorService
+import com.mohiva.play.silhouette.api.repositories.{AuthInfoRepository, AuthenticatorRepository}
 import com.mohiva.play.silhouette.api.util.{CacheLayer, PasswordHasherRegistry, FingerprintGenerator, IDGenerator, Clock, PasswordInfo}
 import com.mohiva.play.silhouette.api.util.{HTTPLayer, PlayHTTPLayer}
 import com.mohiva.play.silhouette.crypto.{JcaSigner, JcaSignerSettings, JcaCrypter, JcaCrypterSettings}
@@ -36,6 +36,8 @@ import net.codingwell.scalaguice.ScalaModule
 import play.api.Configuration
 import play.api.mvc.{Cookie, CookieHeaderEncoding}
 import play.api.libs.ws.WSClient
+
+import com.ironhorsesoftware.play.silhouette.persistence.repositories.{SlickCookieAuthenticatorRepository, SlickJWTAuthenticatorRepository}
 
 import daos.{MemberDAO, CredentialsDAO, ProfileDAO, AuthTokenDAO, AuthTokenDAOImpl}
 import daos.slick.{SlickMemberDAO, SlickCredentialsDAO}
@@ -93,6 +95,9 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     bind[DelegableAuthInfoDAO[OAuth2Info]].toInstance(new InMemoryAuthInfoDAO[OAuth2Info])
     bind[DelegableAuthInfoDAO[OpenIDInfo]].toInstance(new InMemoryAuthInfoDAO[OpenIDInfo])
 
+    bind[AuthenticatorRepository[CookieAuthenticator]].to[SlickCookieAuthenticatorRepository]
+    bind[AuthenticatorRepository[JWTAuthenticator]].to[SlickJWTAuthenticatorRepository]
+
     bind[Silhouette[InteractiveEnv]].to[SilhouetteProvider[InteractiveEnv]]
 
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
@@ -145,12 +150,13 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     fingerprintGenerator: FingerprintGenerator,
     idGenerator: IDGenerator,
     configuration: Configuration,
+    repository : AuthenticatorRepository[CookieAuthenticator],
     clock: Clock): AuthenticatorService[CookieAuthenticator] = {
 
     val config = configuration.underlying.as[CookieAuthenticatorSettings]("silhouette.authenticator")
     val authenticatorEncoder = new CrypterAuthenticatorEncoder(crypter)
 
-    new CookieAuthenticatorService(config, None, signer, cookieHeaderEncoding, authenticatorEncoder, fingerprintGenerator, idGenerator, clock)
+    new CookieAuthenticatorService(config, Some(repository), signer, cookieHeaderEncoding, authenticatorEncoder, fingerprintGenerator, idGenerator, clock)
   }
 
   @Provides @Named("authenticator-signer")
