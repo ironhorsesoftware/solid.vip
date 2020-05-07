@@ -43,7 +43,7 @@ libraryDependencies ++= Seq(
     "com.adrianhurt"      %% "play-bootstrap"                  % "1.5.1-P27-B4",
     "org.postgresql"       % "postgresql"                      % "42.2.5",
     "org.bouncycastle"     % "bcprov-jdk15on"                  % bouncyCastleVersion,
-    "silhouette-persistence" %% "silhouette-persistence"       % "0.6.0-SNAPSHOT",
+    "silhouette-persistence" %% "silhouette-persistence"       % "0.6.1",
     guice,
     caffeine,
     evolutions,
