@@ -4,10 +4,12 @@ import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.LoginInfo
+import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
+import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 
 import models.Member
-import daos.{MemberDAO, CredentialsDAO}
+import daos.MemberDAO
 
 import play.api.Logging
 
@@ -19,7 +21,7 @@ import scala.concurrent.{ ExecutionContext, Future }
  * @param userDAO The user DAO implementation.
  * @param ex      The execution context.
  */
-class MemberServiceImpl @Inject() (memberDAO: MemberDAO, credentialsDao : CredentialsDAO)(implicit ex: ExecutionContext) extends MemberService with Logging {
+class MemberServiceImpl @Inject() (memberDAO: MemberDAO, credentialsDao : DelegableAuthInfoDAO[PasswordInfo])(implicit ex: ExecutionContext) extends MemberService with Logging {
 
   /**
    * Retrieves a user that matches the specified ID.

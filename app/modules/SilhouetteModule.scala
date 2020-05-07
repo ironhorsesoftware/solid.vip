@@ -39,9 +39,9 @@ import play.api.libs.ws.WSClient
 
 import com.ironhorsesoftware.play.silhouette.persistence.repositories.{SlickCookieAuthenticatorRepository, SlickJWTAuthenticatorRepository}
 
-import daos.{MemberDAO, CredentialsDAO, ProfileDAO, AuthTokenDAO, AuthTokenDAOImpl}
-import daos.slick.{SlickMemberDAO, SlickCredentialsDAO}
-import daos.mongodb.{MongoProfileDAO}
+import daos.{MemberDAO, ProfileDAO, AuthTokenDAO, AuthTokenDAOImpl}
+import daos.slick.SlickMemberDAO
+import daos.mongodb.MongoProfileDAO
 import models.Member
 import services.{AuthTokenService, AuthTokenServiceImpl, MemberService, MemberServiceImpl}
 import services.{SolidGitHubProvider, SolidLinkedInProvider, SolidTwitterProvider, SolidGoogleProvider, SolidFacebookProvider}
@@ -86,14 +86,7 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     bind[MemberDAO].to[SlickMemberDAO]
     bind[MemberService].to[MemberServiceImpl]
 
-    bind[CredentialsDAO].to[SlickCredentialsDAO]
-    bind[DelegableAuthInfoDAO[PasswordInfo]].to[CredentialsDAO]
-
     bind[ProfileDAO].to[MongoProfileDAO]
-
-    bind[DelegableAuthInfoDAO[OAuth1Info]].toInstance(new InMemoryAuthInfoDAO[OAuth1Info])
-    bind[DelegableAuthInfoDAO[OAuth2Info]].toInstance(new InMemoryAuthInfoDAO[OAuth2Info])
-    bind[DelegableAuthInfoDAO[OpenIDInfo]].toInstance(new InMemoryAuthInfoDAO[OpenIDInfo])
 
     bind[AuthenticatorRepository[CookieAuthenticator]].to[SlickCookieAuthenticatorRepository]
     bind[AuthenticatorRepository[JWTAuthenticator]].to[SlickJWTAuthenticatorRepository]
@@ -176,25 +169,6 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
   @Provides
   def providePasswordHasherRegistry(): PasswordHasherRegistry = {
     PasswordHasherRegistry(new BCryptSha256PasswordHasher(), Seq(new BCryptPasswordHasher()))
-  }
-
-  /**
-   * Provides the auth info repository.
-   *
-   * @param passwordInfoDAO The implementation of the delegable password auth info DAO.
-   * @param oauth1InfoDAO The implementation of the delegable OAuth1 auth info DAO.
-   * @param oauth2InfoDAO The implementation of the delegable OAuth2 auth info DAO.
-   * @param openIDInfoDAO The implementation of the delegable OpenID auth info DAO.
-   * @return The auth info repository instance.
-   */
-  @Provides
-  def provideAuthInfoRepository(
-    passwordInfoDAO: DelegableAuthInfoDAO[PasswordInfo],
-    oauth1InfoDAO: DelegableAuthInfoDAO[OAuth1Info],
-    oauth2InfoDAO: DelegableAuthInfoDAO[OAuth2Info],
-    openIDInfoDAO: DelegableAuthInfoDAO[OpenIDInfo]): AuthInfoRepository = {
-
-    new DelegableAuthInfoRepository(passwordInfoDAO, oauth1InfoDAO, oauth2InfoDAO, openIDInfoDAO)
   }
 
   /**
