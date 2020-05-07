@@ -3,7 +3,7 @@
 -- !Ups
 
 ALTER TABLE credentials ADD COLUMN id SERIAL;
-ALTER TABLE credetnials ADD COLUMN provider_id TEXT NOT NULL;
+ALTER TABLE credentials ADD COLUMN provider_id TEXT NOT NULL DEFAULT 'credentials';
 
 ALTER TABLE credentials DROP CONSTRAINT credentials_pkey;
 ALTER TABLE credentials ADD PRIMARY KEY (id);
@@ -44,7 +44,9 @@ CREATE TABLE authentication_cookies (
     provider_key TEXT NOT NULL,
     last_used_at TIMESTAMP NOT NULL,
     expires_at TIMESTAMP NOT NULL,
-    idle_timeout LONG
+    idle_timeout BIGINT,
+    max_age BIGINT,
+    fingerprint TEXT
 );
 
 -- !Downs
