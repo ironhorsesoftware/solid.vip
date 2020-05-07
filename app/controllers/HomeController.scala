@@ -38,7 +38,7 @@ class HomeController @Inject()(cc: ControllerComponents, mailerClient: MailerCli
     logger.info(s"Hostname: ${request.domain}")
     val domainSplit = request.domain.split('.')
 
-    if (domainSplit.length == 3) {
+    if (domainSplit.length == 4) {
       logger.info(s"Fetching domain for username ${domainSplit.head}")
       handleProfilePage(domainSplit.head)
     } else {
@@ -70,7 +70,7 @@ class HomeController @Inject()(cc: ControllerComponents, mailerClient: MailerCli
       if (profileOpt.isDefined) {
         Ok(views.html.profile.profile(profileOpt.get))
       } else {
-        Redirect("https://solid.vip")
+        Redirect("https://solid-vip.herokuapp.com")
       }
     }
   }

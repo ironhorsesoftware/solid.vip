@@ -149,7 +149,7 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     val config = configuration.underlying.as[CookieAuthenticatorSettings]("silhouette.authenticator")
     val authenticatorEncoder = new CrypterAuthenticatorEncoder(crypter)
 
-    new CookieAuthenticatorService(config, None, signer, cookieHeaderEncoding, authenticatorEncoder, fingerprintGenerator, idGenerator, clock)
+    new CookieAuthenticatorService(config, Some(repository), signer, cookieHeaderEncoding, authenticatorEncoder, fingerprintGenerator, idGenerator, clock)
   }
 
   @Provides @Named("authenticator-signer")
