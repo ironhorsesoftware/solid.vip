@@ -43,7 +43,7 @@ libraryDependencies ++= Seq(
     "com.adrianhurt"      %% "play-bootstrap"                  % "1.5.1-P27-B4",
     "org.postgresql"       % "postgresql"                      % "42.2.5",
     "org.bouncycastle"     % "bcprov-jdk15on"                  % bouncyCastleVersion,
-    "silhouette-persistence" %% "silhouette-persistence"       % "0.6.1",
+    "com.ironhorsesoftware.silhouette" %% "silhouette-persistence" % "0.6.0",
     guice,
     caffeine,
     evolutions,
@@ -53,7 +53,5 @@ libraryDependencies ++= Seq(
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/"
-
-externalResolvers += "Iron Horse Software Silhouette Packages" at "https://maven.pkg.github.com/ironhorsesoftware/silhouette"
 
 updateOptions := updateOptions.value.withLatestSnapshots(false)
