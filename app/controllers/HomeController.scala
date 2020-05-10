@@ -65,6 +65,10 @@ class HomeController @Inject()(cc: ControllerComponents, mailerClient: MailerCli
     )
   }
 
+  def profile(username : String) = silhouette.UserAwareAction.async { implicit request : UserAwareRequest[InteractiveEnv, AnyContent] =>
+    handleProfilePage(username)
+  }
+
   def handleProfilePage(username : String)(implicit request : UserAwareRequest[InteractiveEnv, AnyContent]): Future[Result] = {
     profileDao.retrieve(LoginInfo(CredentialsProvider.ID, username)).map { profileOpt =>
       if (profileOpt.isDefined) {
