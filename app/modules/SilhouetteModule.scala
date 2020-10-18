@@ -40,7 +40,7 @@ import play.api.libs.ws.WSClient
 import com.ironhorsesoftware.play.silhouette.persistence.repositories.{SlickCookieAuthenticatorRepository, SlickJWTAuthenticatorRepository}
 
 import daos.{MemberDAO, ProfileDAO, AuthTokenDAO, AuthTokenDAOImpl}
-import daos.slick.SlickMemberDAO
+import daos.slick.{SlickMemberDAO, SlickProfileDAO}
 import daos.mongodb.MongoProfileDAO
 import models.Member
 import services.{AuthTokenService, AuthTokenServiceImpl, MemberService, MemberServiceImpl}
@@ -86,7 +86,7 @@ class SilhouetteModule @Inject() extends AbstractModule with ScalaModule  {
     bind[MemberDAO].to[SlickMemberDAO]
     bind[MemberService].to[MemberServiceImpl]
 
-    bind[ProfileDAO].to[MongoProfileDAO]
+    bind[ProfileDAO].to[SlickProfileDAO]
 
     bind[AuthenticatorRepository[CookieAuthenticator]].to[SlickCookieAuthenticatorRepository]
     bind[AuthenticatorRepository[JWTAuthenticator]].to[SlickJWTAuthenticatorRepository]
