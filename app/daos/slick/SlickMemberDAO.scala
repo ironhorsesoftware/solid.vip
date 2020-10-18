@@ -34,6 +34,10 @@ class SlickMemberDAO @Inject()(protected val dbConfigProvider: DatabaseConfigPro
 
   private val members = TableQuery[Members]
 
+  def all() : Future[Seq[Member]] = db.run {
+    members.sortBy(_.username).result
+  }
+
   def create(member : Member) : Future[UUID] = db.run {
       (members returning members.map(_.id)) += member
   }
